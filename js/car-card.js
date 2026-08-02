@@ -199,7 +199,11 @@ ${profit.toLocaleString()} ₽
 🔄 Изменить статус
 
 </div>
+<div class="button" onclick="sellCarForm(${car.id})">
 
+💰 Продать автомобиль
+
+</div>
 
 <div class="button" onclick="showCars()">
 
