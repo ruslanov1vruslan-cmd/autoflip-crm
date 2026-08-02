@@ -66,7 +66,7 @@ cars.forEach(car => {
 html += `
 
 
-<div class="car-card">
+<div class="car-card" onclick="openCarCard(${car.id})">
 
 
 <h3>
