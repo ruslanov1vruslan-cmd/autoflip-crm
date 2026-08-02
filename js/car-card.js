@@ -189,7 +189,11 @@ ${profit.toLocaleString()} ₽
 
 </div>
 
+<div class="button" onclick="addExpenseForm(${car.id})">
 
+💸 Добавить расход
+
+</div>
 
 
 
