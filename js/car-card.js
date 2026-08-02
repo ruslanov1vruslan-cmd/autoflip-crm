@@ -194,7 +194,11 @@ ${profit.toLocaleString()} ₽
 💸 Добавить расход
 
 </div>
+<div class="button" onclick="changeStatusForm(${car.id})">
 
+🔄 Изменить статус
+
+</div>
 
 
 <div class="button" onclick="showCars()">
