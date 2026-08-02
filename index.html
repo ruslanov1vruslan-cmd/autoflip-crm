@@ -1,409 +1,217 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>AutoFlip CRM</title>
+
+<link rel="manifest" href="manifest.webmanifest">
+
 <style>
-:root{
-  --bg:#f8fafc;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;
-  --dark:#0f172a;--good:#059669;--goodbg:#ecfdf5;--warn:#b45309;--warnbg:#fffbeb;
-  --bad:#be123c;--badbg:#fff1f2;--blue:#2563eb;--bluebg:#eff6ff;
-  --shadow:0 8px 24px rgba(15,23,42,.06);--r:22px
+body {
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:#f8fafc;
+    color:#0f172a;
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.app{max-width:560px;margin:0 auto;min-height:100vh;background:var(--bg);padding-bottom:90px}
-main{padding:18px 16px 24px}
-.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
-h1{font-size:27px;line-height:1.1;margin:0 0 5px}
-h2{font-size:19px;margin:0}
-p{margin:0}
-.muted{color:var(--muted);font-size:13px}
-.icon-btn,.btn,.pill{border:0;border-radius:16px}
-.icon-btn{width:44px;height:44px;background:#fff;border:1px solid var(--line);display:grid;place-items:center}
-.btn{padding:12px 15px;font-weight:700}
-.btn.dark{background:var(--dark);color:#fff}
-.btn.light{background:#fff;border:1px solid var(--line);color:var(--text)}
-.btn.good{background:var(--good);color:#fff}
-.btn.blue{background:var(--blue);color:#fff}
-.btn.full{width:100%}
-.hero{background:var(--dark);color:#fff;border-radius:28px;padding:20px;box-shadow:var(--shadow);margin-bottom:14px}
-.hero .label{color:#cbd5e1;font-size:13px}
-.hero .big{font-size:34px;font-weight:800;margin-top:8px}
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.hero-box{background:rgba(255,255,255,.08);padding:12px;border-radius:16px}
-.hero-box .v{font-weight:700;margin-top:5px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--shadow)}
-.stat .k{font-size:12px;color:var(--muted)}
-.stat .v{font-size:20px;font-weight:800;margin-top:5px}
-.section{margin-top:22px}
-.section-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:10px}
-.link{background:none;border:0;padding:0;font-weight:700;color:#334155}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--shadow)}
-.list{display:grid;gap:10px}
-.car-card{width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--shadow)}
-.car-top{display:flex;gap:12px;align-items:flex-start}
-.thumb{width:58px;height:58px;border-radius:16px;background:#f1f5f9;display:grid;place-items:center;overflow:hidden;flex:none}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.car-main{min-width:0;flex:1}
-.car-title{font-weight:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.status{display:inline-flex;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800}
-.s-sale{background:var(--goodbg);color:var(--good)} .s-prep{background:var(--warnbg);color:var(--warn)}
-.s-reserve{background:#f5f3ff;color:#6d28d9}.s-sold{background:#f1f5f9;color:#475569}
-.car-meta{font-size:12px;color:var(--muted);margin-top:5px}
-.car-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:13px}
-.car-stat{background:#f8fafc;padding:9px;border-radius:14px}
-.car-stat.good{background:var(--goodbg)}
-.car-stat .label{font-size:9px;color:var(--muted)}
-.car-stat.good .label{color:var(--good)}
-.car-stat .val{font-size:12px;font-weight:800;margin-top:4px}
-.row{display:flex;gap:8px;align-items:center}
-.stack{display:grid;gap:10px}
-.input, textarea, select{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:16px;background:#fff;outline:none}
-.input:focus, textarea:focus, select:focus{border-color:#94a3b8}
-.label{font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px;display:block}
-.field{display:grid;gap:5px}
-.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(255,255,255,.96);border-top:1px solid var(--line);backdrop-filter:blur(12px)}
-.bottomnav-inner{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom))}
-.nav-btn{border:0;background:transparent;padding:8px 4px;border-radius:16px;font-size:10px;font-weight:800;color:#64748b}
-.nav-btn.active{background:var(--dark);color:#fff}
-.icon{font-size:18px;display:block;margin-bottom:4px}
-.alert{padding:14px;border-radius:18px;border:1px solid #fde68a;background:#fffbeb;color:#92400e}
-.bad{padding:14px;border-radius:18px;border:1px solid #fecdd3;background:#fff1f2;color:#9f1239}
-.goodbox{padding:14px;border-radius:18px;border:1px solid #a7f3d0;background:#ecfdf5;color:#065f46}
-.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:4px}
-.tab{white-space:nowrap;border:1px solid var(--line);background:#fff;padding:9px 13px;border-radius:999px;font-size:12px;font-weight:800;color:#475569}
-.tab.active{background:var(--dark);color:#fff;border-color:var(--dark)}
-.modal-wrap{position:fixed;inset:0;background:rgba(2,6,23,.48);display:none;align-items:end;justify-content:center;z-index:100}
-.modal-wrap.show{display:flex}
-.modal{width:min(560px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:28px 28px 0 0;padding:18px 16px 24px}
-@media(min-width:700px){.modal-wrap{align-items:center;padding:24px}.modal{border-radius:28px}.app{box-shadow:0 0 0 1px rgba(15,23,42,.03)}}
-.divider{height:1px;background:var(--line);margin:10px 0}
-.kv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.kv .box{background:#f8fafc;padding:12px;border-radius:16px}
-.kv .key{font-size:11px;color:var(--muted)}
-.kv .value{font-weight:800;margin-top:4px;word-break:break-word}
-.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed #cbd5e1;border-radius:22px}
-.small{font-size:11px}
-.photo-preview{height:180px;border-radius:20px;overflow:hidden;background:#f1f5f9;display:grid;place-items:center}
-.photo-preview img{width:100%;height:100%;object-fit:cover}
+
+.header {
+    padding:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo {
+    font-size:22px;
+    font-weight:700;
+}
+
+.icons {
+    font-size:20px;
+}
+
+.container {
+    padding:0 20px 90px;
+}
+
+.card {
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.06);
+}
+
+.big-number {
+    font-size:32px;
+    font-weight:700;
+    margin-top:10px;
+}
+
+.stats {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.button {
+    background:#2563eb;
+    color:white;
+    text-align:center;
+    padding:16px;
+    border-radius:15px;
+    font-weight:600;
+    margin-top:20px;
+}
+
+.bottom {
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:70px;
+    background:white;
+    border-top:1px solid #e5e7eb;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+}
+
+.menu-item {
+    text-align:center;
+    font-size:13px;
+}
+
+.menu-item span {
+    display:block;
+    font-size:22px;
+}
+
 </style>
 
-<link rel="manifest" href="./manifest.webmanifest">
-<meta name="theme-color" content="#0f172a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="AutoFlip CRM">
-<link rel="apple-touch-icon" href="./icon-180.png">
 </head>
+
+
 <body>
-<div class="app" id="app">
-  <main id="main"></main>
-  <div class="bottomnav">
-    <div class="bottomnav-inner">
-      <button class="nav-btn active" data-nav="home"><span class="icon">⌂</span>Главная</button>
-      <button class="nav-btn" data-nav="cars"><span class="icon">🚗</span>Авто</button>
-      <button class="nav-btn" data-nav="search"><span class="icon">⌕</span>Поиск</button>
-      <button class="nav-btn" data-nav="finance"><span class="icon">₽</span>Финансы</button>
-      <button class="nav-btn" data-nav="tasks"><span class="icon">✓</span>Задачи</button>
-    </div>
-  </div>
+
+<div class="header">
+
+<div class="logo">
+AutoFlip CRM
 </div>
 
-<div class="modal-wrap" id="modalWrap">
-  <div class="modal" id="modal"></div>
+<div class="icons">
+🔔 ⚙️
 </div>
 
-<script>
-const KEY = 'autoflip-crm-standalone-v1';
-const SETTINGS_KEY = 'autoflip-crm-standalone-settings-v1';
+</div>
 
-const seed = {
-  cars:[
-    {id:1,brand:'Toyota',model:'Camry',year:2019,mileage:98000,color:'серебристый',vin:'JTNB11HK303456789',plate:'А123ВС 777',status:'В продаже',purchaseDate:'2026-07-22',purchase:1420000,targetSale:1690000,actualSale:0,saleDate:'',photo:'',source:'Avito',listingUrl:'',note:'Хорошая комплектация.'},
-    {id:2,brand:'Kia',model:'Rio',year:2020,mileage:71000,color:'белый',vin:'Z94C241BBL1234567',plate:'В456ЕЕ 777',status:'Подготовка',purchaseDate:'2026-07-27',purchase:980000,targetSale:1120000,actualSale:0,saleDate:'',photo:'',source:'Авто.ру',listingUrl:'',note:'Нужна химчистка.'},
-    {id:3,brand:'Škoda',model:'Octavia',year:2018,mileage:116000,color:'серый',vin:'TMBJJ7NE9J0123456',plate:'С789КК 777',status:'В продаже',purchaseDate:'2026-07-14',purchase:1210000,targetSale:1490000,actualSale:0,saleDate:'',photo:'',source:'Avito',listingUrl:'',note:'Проверить цену.'}
-  ],
-  expenses:[
-    {id:101,carId:1,date:'2026-07-23',category:'ТО',amount:28000,note:'Масло, фильтры'},
-    {id:102,carId:1,date:'2026-07-24',category:'Косметика',amount:34000,note:'Полировка и химчистка'},
-    {id:103,carId:2,date:'2026-07-28',category:'Ремонт',amount:18000,note:'Тормозные диски'},
-    {id:104,carId:2,date:'2026-07-29',category:'Косметика',amount:10000,note:'Химчистка'},
-    {id:105,carId:3,date:'2026-07-15',category:'Диагностика',amount:12000,note:'Компьютерная диагностика'},
-    {id:106,carId:3,date:'2026-07-16',category:'Ремонт',amount:42000,note:'Подвеска'}
-  ],
-  clients:[
-    {id:201,name:'Алексей',phone:'+7 900 123-45-67',carId:1,budget:1700000,status:'Новый',nextContact:'2026-08-03',note:'Интересуется Camry'},
-    {id:202,name:'Мария',phone:'+7 901 555-22-11',carId:2,budget:1150000,status:'Переговоры',nextContact:'2026-08-02',note:'Ждет дополнительные фото'}
-  ],
-  tasks:[
-    {id:301,title:'Обновить объявление Toyota Camry',carId:1,priority:'Высокий',due:'2026-08-02',done:false},
-    {id:302,title:'Созвониться с клиентом по Kia Rio',carId:2,priority:'Средний',due:'2026-08-02',done:false},
-    {id:303,title:'Проверить цену Škoda Octavia',carId:3,priority:'Высокий',due:'2026-08-03',done:false}
-  ]
-};
 
-let data = loadData();
-let settings = loadSettings();
-let screen = 'home';
-let selectedCarId = null;
+<div class="container">
 
-function loadData(){try{return JSON.parse(localStorage.getItem(KEY))||structuredClone(seed)}catch{return structuredClone(seed)}}
-function loadSettings(){try{return JSON.parse(localStorage.getItem(SETTINGS_KEY))||{syncUrl:'',apiKey:''}}catch{return {syncUrl:'',apiKey:''}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(data));localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
-function money(v){return new Intl.NumberFormat('ru-RU',{style:'currency',currency:'RUB',maximumFractionDigits:0}).format(Number(v||0))}
-function today(){return new Date().toISOString().slice(0,10)}
-function dateLabel(v){if(!v)return '—';return new Intl.DateTimeFormat('ru-RU',{day:'2-digit',month:'short'}).format(new Date(v+'T12:00:00'))}
-function expensesFor(carId){return data.expenses.filter(x=>x.carId===carId).reduce((s,x)=>s+Number(x.amount||0),0)}
-function daysInWork(car){const start=new Date((car.purchaseDate||today())+'T12:00:00').getTime();const end=car.status==='Продан'&&car.saleDate?new Date(car.saleDate+'T12:00:00').getTime():Date.now();return Math.max(0,Math.floor((end-start)/86400000))}
-function profit(car){return Number(car.targetSale||0)-Number(car.purchase||0)-expensesFor(car.id)}
-function statusClass(s){return s==='В продаже'?'s-sale':s==='Подготовка'?'s-prep':s==='Резерв'?'s-reserve':'s-sold'}
-function qs(sel){return document.querySelector(sel)}
-function setScreen(s){screen=s;selectedCarId=null;render()}
-function carById(id){return data.cars.find(c=>c.id===Number(id))}
-function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 
-function render(){
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.nav===screen));
-  let html='';
-  if(screen==='home')html=renderHome();
-  else if(screen==='cars')html=renderCars();
-  else if(screen==='search')html=renderSearch();
-  else if(screen==='finance')html=renderFinance();
-  else if(screen==='tasks')html=renderTasks();
-  else if(screen==='settings')html=renderSettings();
-  else if(screen==='detail')html=renderDetail();
-  qs('#main').innerHTML=html;
-  bindCommon();
-}
+<div class="card">
 
-function renderHome(){
-  const active=data.cars.filter(c=>c.status!=='Продан');
-  const invested=active.reduce((s,c)=>s+c.purchase+expensesFor(c.id),0);
-  const potential=active.reduce((s,c)=>s+profit(c),0);
-  const avg=active.length?Math.round(active.reduce((s,c)=>s+daysInWork(c),0)/active.length):0;
-  const overdue=data.tasks.filter(t=>!t.done&&t.due<today()).length;
-  const long=active.filter(c=>daysInWork(c)>=15)[0];
-  return `
-    <div class="topbar"><div><div class="muted">AutoFlip CRM • автономный режим</div><h1>Добрый день 👋</h1></div><button class="icon-btn" onclick="openSettings()">⚙️</button></div>
-    <div class="hero"><div class="label">Потенциальная прибыль автопарка</div><div class="big">${money(potential)}</div><div class="hero-grid"><div class="hero-box"><div class="label">Вложено</div><div class="v">${money(invested)}</div></div><div class="hero-box"><div class="label">Средний срок</div><div class="v">${avg} дней</div></div></div></div>
-    <div class="grid2"><div class="stat"><div class="k">Авто в работе</div><div class="v">${active.length}</div></div><div class="stat"><div class="k">Открытых задач</div><div class="v">${data.tasks.filter(t=>!t.done).length}</div></div></div>
-    <div class="section"><div class="section-head"><div><h2>Последние сделки</h2><div class="muted">Автопарк</div></div><button class="link" onclick="setScreen('cars')">Все авто</button></div><div class="list">${active.slice(0,3).map(renderCarCard).join('')}</div></div>
-    ${long?`<div class="section alert"><b>Нужна проверка</b><div class="small" style="margin-top:6px">${escapeHtml(long.brand)} ${escapeHtml(long.model)} в работе уже ${daysInWork(long)} дней. Проверь цену и объявление.</div></div>`:''}
-    ${overdue?`<div class="section bad"><b>Есть просроченные задачи: ${overdue}</b></div>`:''}
-  `;
-}
+<div>
+💰 Деньги в автомобилях
+</div>
 
-function renderCarCard(car){
-  const spent=expensesFor(car.id), total=car.purchase+spent, p=car.status==='Продан'?(car.actualSale-total):profit(car), roi=total?Math.round(p/total*100):0;
-  return `<button class="car-card" onclick="openCar(${car.id})"><div class="car-top"><div class="thumb">${car.photo?`<img src="${car.photo}" alt="">`:'🚗'}</div><div class="car-main"><div class="car-title">${escapeHtml(car.brand)} ${escapeHtml(car.model)} <span class="status ${statusClass(car.status)}">${escapeHtml(car.status)}</span></div><div class="car-meta">${car.year} • ${Number(car.mileage||0).toLocaleString('ru-RU')} км • ${escapeHtml(car.color||'')}</div></div><div>›</div></div><div class="car-stats"><div class="car-stat"><div class="label">Вложено</div><div class="val">${money(total)}</div></div><div class="car-stat"><div class="label">Продажа</div><div class="val">${money(car.status==='Продан'?car.actualSale:car.targetSale)}</div></div><div class="car-stat good"><div class="label">Прибыль</div><div class="val">+${money(p)}</div></div></div><div class="row" style="justify-content:space-between;margin-top:10px"><span class="muted">ROI ${roi}%</span><span class="muted">${daysInWork(car)} дней</span></div></button>`;
-}
+<div class="big-number">
+0 ₽
+</div>
 
-function renderCars(){
-  return `<div class="topbar"><div><h1>Автопарк</h1><div class="muted">${data.cars.length} карточек</div></div><button class="btn dark" onclick="openCarModal()">+ Авто</button></div>
-  <div class="card stack">
-    <input id="carSearch" class="input" placeholder="Марка, модель, VIN или госномер">
-    <select id="carStatus"><option>Все</option><option>Подготовка</option><option>В продаже</option><option>Резерв</option><option>Продан</option></select>
-  </div>
-  <div id="carList" class="list section">${data.cars.map(renderCarCard).join('')}</div>`;
-}
+</div>
 
-function updateCarList(){
-  const q=(qs('#carSearch')?.value||'').toLowerCase(); const st=qs('#carStatus')?.value||'Все';
-  const filtered=data.cars.filter(c=>`${c.brand} ${c.model} ${c.vin} ${c.plate}`.toLowerCase().includes(q)&&(st==='Все'||c.status===st));
-  qs('#carList').innerHTML=filtered.length?filtered.map(renderCarCard).join(''):'<div class="empty">Ничего не найдено</div>';
-}
 
-function renderSearch(){
-  return `<div class="topbar"><div><h1>Поиск сделки</h1><div class="muted">Оцени автомобиль до покупки</div></div></div>
-  <div class="card stack">
-    ${field('Цена покупки','evalPurchase',1200000,'number')}
-    ${field('Ремонт и подготовка','evalRepair',60000,'number')}
-    ${field('Торг и прочие расходы','evalOther',30000,'number')}
-    ${field('Плановая продажа','evalSale',1500000,'number')}
-  </div>
-  <div id="evalResult" class="section"></div>`;
-}
 
-function calcEval(){
-  const p=Number(qs('#evalPurchase')?.value||0), r=Number(qs('#evalRepair')?.value||0), o=Number(qs('#evalOther')?.value||0), s=Number(qs('#evalSale')?.value||0);
-  const total=p+r+o, profit=s-total, roi=total?Math.round(profit/total*100):0;
-  const verdict=profit>=120000&&roi>=8?'Брать в работу':profit>=60000?'Проверить':'Не брать';
-  const cls=verdict==='Брать в работу'?'goodbox':verdict==='Проверить'?'alert':'bad';
-  qs('#evalResult').innerHTML=`<div class="${cls}"><div class="row" style="justify-content:space-between"><b>${verdict}</b><b>ROI ${roi}%</b></div><div style="margin-top:8px;font-size:22px;font-weight:800">${money(profit)}</div><div class="small" style="margin-top:4px">Общие вложения: ${money(total)}</div></div>`;
-}
+<div class="stats">
 
-function renderFinance(){
-  const active=data.cars.filter(c=>c.status!=='Продан'); const sold=data.cars.filter(c=>c.status==='Продан');
-  const invested=active.reduce((s,c)=>s+c.purchase+expensesFor(c.id),0);
-  const potential=active.reduce((s,c)=>s+profit(c),0);
-  const realized=sold.reduce((s,c)=>s+(c.actualSale-c.purchase-expensesFor(c.id)),0);
-  const roi=invested?Math.round(potential/invested*100):0;
-  return `<div class="topbar"><div><h1>Финансы</h1><div class="muted">Капитал и доходность</div></div></div>
-  <div class="grid2"><div class="stat"><div class="k">Потенциальная прибыль</div><div class="v">${money(potential)}</div></div><div class="stat"><div class="k">Средний ROI</div><div class="v">${roi}%</div></div></div>
-  <div class="section card"><h2>Итог</h2><div class="kv" style="margin-top:12px"><div class="box"><div class="key">Вложено</div><div class="value">${money(invested)}</div></div><div class="box"><div class="key">Реализовано</div><div class="value">${money(realized)}</div></div></div></div>
-  <div class="section"><h2>По автомобилям</h2><div class="list" style="margin-top:10px">${active.map(c=>{const total=c.purchase+expensesFor(c.id),p=profit(c),r=total?Math.round(p/total*100):0;return `<div class="card"><div class="row" style="justify-content:space-between"><b>${escapeHtml(c.brand)} ${escapeHtml(c.model)}</b><b style="color:${p>=0?'#059669':'#be123c'}">${money(p)}</b></div><div class="muted" style="margin-top:6px">ROI ${r}% • вложено ${money(total)}</div></div>`}).join('')}</div></div>`;
-}
+<div class="card">
 
-function renderTasks(){
-  const tasks=[...data.tasks].sort((a,b)=>Number(a.done)-Number(b.done)||a.due.localeCompare(b.due));
-  return `<div class="topbar"><div><h1>Задачи</h1><div class="muted">Контроль работы</div></div><button class="btn dark" onclick="openTaskModal()">+ Задача</button></div>
-  <div class="list">${tasks.map(t=>{const c=carById(t.carId),overdue=!t.done&&t.due<today();return `<div class="card row"><button class="icon-btn" onclick="toggleTask(${t.id})">${t.done?'✓':'○'}</button><div style="flex:1;min-width:0"><div style="font-weight:800;${t.done?'text-decoration:line-through;color:#94a3b8':''}">${escapeHtml(t.title)}</div><div class="muted" style="margin-top:5px">${c?escapeHtml(c.brand+' '+c.model)+' • ':''}${dateLabel(t.due)}</div></div><span class="status ${overdue?'s-sold':t.priority==='Высокий'?'s-prep':'s-sale'}">${overdue?'Просрочено':t.priority}</span></div>`}).join('')}</div>`;
-}
+🚗 Автомобили
 
-function renderSettings(){
-  return `<div class="topbar"><div><h1>Настройки</h1><div class="muted">Синхронизация и резервные копии</div></div><button class="icon-btn" onclick="setScreen('home')">←</button></div>
-  <div class="goodbox"><b>CRM работает локально</b><div class="small" style="margin-top:6px">Данные хранятся в браузере на этом устройстве. Синхронизация отправляет копию в Google Apps Script.</div></div>
-  <div class="section card stack">
-    <h2>Google Sheets / Apps Script</h2>
-    ${field('URL веб-приложения','syncUrl',settings.syncUrl,'text')}
-    ${field('API ключ','apiKey',settings.apiKey,'text')}
-    <button class="btn dark full" onclick="saveSettings()">Сохранить настройки</button>
-    <button class="btn blue full" onclick="syncNow()">Синхронизировать сейчас</button>
-    <button class="btn light full" onclick="openSyncHelp()">Проверить адрес / помощь</button>
-    <div class="small muted">URL должен быть вида: https://script.google.com/macros/s/.../exec</div>
-    <div id="syncStatus" class="small muted"></div>
-  </div>
-  <div class="section card stack">
-    <h2>Резервная копия</h2>
-    <div class="row"><button class="btn light" style="flex:1" onclick="exportBackup()">Экспорт</button><button class="btn light" style="flex:1" onclick="qs('#importFile').click()">Импорт</button></div>
-    <input id="importFile" type="file" accept="application/json" hidden onchange="importBackup(event)">
-  </div>
-  <div class="section card">
-    <h2>Важно о синхронизации</h2>
-    <p class="muted" style="margin-top:8px;line-height:1.5">Автономный HTML-файл можно открыть без сервера. Локальные данные работают офлайн. Отправка в Google Apps Script выполняется через запрос без чтения ответа, поэтому статус «отправлено» означает, что браузер отправил запрос; окончательное подтверждение лучше проверять по листу «История синхронизации» в Google Sheets.</p>
-  </div>`;
-}
+<div class="big-number">
+0
+</div>
 
-function renderDetail(){
-  const car=carById(selectedCarId); if(!car){screen='cars';return renderCars()}
-  const spent=expensesFor(car.id), total=car.purchase+spent, p=car.status==='Продан'?(car.actualSale-total):profit(car), roi=total?Math.round(p/total*100):0;
-  const ex=data.expenses.filter(x=>x.carId===car.id);
-  const clients=data.clients.filter(x=>x.carId===car.id);
-  const tasks=data.tasks.filter(x=>x.carId===car.id);
-  return `<div class="topbar"><div><button class="link" onclick="setScreen('cars')">← Назад</button><h1 style="margin-top:8px">${escapeHtml(car.brand)} ${escapeHtml(car.model)}</h1><div class="muted">${car.year} • ${Number(car.mileage||0).toLocaleString('ru-RU')} км</div></div><span class="status ${statusClass(car.status)}">${escapeHtml(car.status)}</span></div>
-  <div class="photo-preview">${car.photo?`<img src="${car.photo}" alt="">`:'🚗'}</div>
-  <div class="grid2 section"><div class="stat"><div class="k">Вложено</div><div class="v">${money(total)}</div></div><div class="stat"><div class="k">${car.status==='Продан'?'Прибыль':'Ожидаемая прибыль'}</div><div class="v">${money(p)}</div></div></div>
-  <div class="card section"><div class="kv"><div class="box"><div class="key">VIN</div><div class="value">${escapeHtml(car.vin||'—')}</div></div><div class="box"><div class="key">Госномер</div><div class="value">${escapeHtml(car.plate||'—')}</div></div><div class="box"><div class="key">Покупка</div><div class="value">${money(car.purchase)}</div></div><div class="box"><div class="key">План продажи</div><div class="value">${money(car.targetSale)}</div></div></div><div class="divider"></div><div class="muted">${escapeHtml(car.note||'')}</div></div>
-  <div class="tabs section"><button class="tab active" onclick="showDetailTab('overview')">Обзор</button><button class="tab" onclick="showDetailTab('expenses')">Расходы (${ex.length})</button><button class="tab" onclick="showDetailTab('clients')">Клиенты (${clients.length})</button><button class="tab" onclick="showDetailTab('tasks')">Задачи (${tasks.length})</button></div>
-  <div id="detailTab" class="section">${detailOverview(car,roi)}</div>`;
-}
+</div>
 
-function detailOverview(car,roi){
-  return `<div class="stack"><button class="btn dark full" onclick="markSold(${car.id})">${car.status==='Продан'?'Уже продано':'Продать автомобиль'}</button><button class="btn light full" onclick="setStatus(${car.id},'Резерв')">Поставить резерв</button><button class="btn light full" onclick="editCar(${car.id})">Изменить карточку</button><button class="btn light full" onclick="addExpense(${car.id})">Добавить расход</button></div>`;
-}
 
-function showDetailTab(tab){
-  const car=carById(selectedCarId); const container=qs('#detailTab'); if(!car||!container)return;
-  document.querySelectorAll('.tabs .tab').forEach((b,i)=>b.classList.toggle('active',['overview','expenses','clients','tasks'][i]===tab));
-  if(tab==='overview')container.innerHTML=detailOverview(car,Math.round((profit(car)/(car.purchase+expensesFor(car.id)||1))*100));
-  if(tab==='expenses')container.innerHTML=`<div class="stack"><button class="btn dark full" onclick="addExpense(${car.id})">+ Добавить расход</button>${data.expenses.filter(x=>x.carId===car.id).map(x=>`<div class="card row"><div style="flex:1"><b>${escapeHtml(x.category)}</b><div class="muted">${dateLabel(x.date)} • ${escapeHtml(x.note||'')}</div></div><b>${money(x.amount)}</b><button class="icon-btn" onclick="deleteExpense(${x.id})">🗑</button></div>`).join('')||'<div class="empty">Расходов пока нет</div>'}</div>`;
-  if(tab==='clients')container.innerHTML=`<div class="stack">${data.clients.filter(x=>x.carId===car.id).map(x=>`<div class="card"><div class="row" style="justify-content:space-between"><b>${escapeHtml(x.name)}</b><span class="status s-sale">${escapeHtml(x.status)}</span></div><div class="muted" style="margin-top:6px">${escapeHtml(x.phone)}</div><div class="row" style="justify-content:space-between;margin-top:10px"><span class="muted">Бюджет</span><b>${money(x.budget)}</b></div><a class="btn dark full" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="tel:${encodeURIComponent(x.phone)}">Позвонить</a></div>`).join('')||'<div class="empty">Покупателей по этой машине нет</div>'}</div>`;
-  if(tab==='tasks')container.innerHTML=`<div class="stack">${data.tasks.filter(x=>x.carId===car.id).map(x=>`<div class="card row"><div style="width:10px;height:10px;border-radius:50%;background:${x.done?'#10b981':'#f59e0b'}"></div><div style="flex:1"><b>${escapeHtml(x.title)}</b><div class="muted">${dateLabel(x.due)} • ${escapeHtml(x.priority)}</div></div></div>`).join('')||'<div class="empty">Задач нет</div>'}</div>`;
-}
+<div class="card">
 
-function field(label,id,value,type='text'){return `<div class="field"><label class="label">${label}</label><input class="input" id="${id}" type="${type}" value="${escapeHtml(value)}" oninput="liveField('${id}')"></div>`}
+📈 Прибыль
 
-function bindCommon(){
-  if(screen==='cars'){
-    qs('#carSearch')?.addEventListener('input',updateCarList); qs('#carStatus')?.addEventListener('change',updateCarList);
-  }
-  if(screen==='search'){
-    ['evalPurchase','evalRepair','evalOther','evalSale'].forEach(id=>qs('#'+id)?.addEventListener('input',calcEval));calcEval();
-  }
-}
+<div class="big-number">
+0 ₽
+</div>
 
-function liveField(id){}
-function openSettings(){screen='settings';render()}
-function openCar(id){selectedCarId=id;screen='detail';render()}
-function openCarModal(){
-  openModal(`<div class="topbar"><div><h2>Новый автомобиль</h2><div class="muted">Карточка сделки</div></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
-  <div class="stack">
-    ${field('Марка','newBrand','')}
-    ${field('Модель','newModel','')}
-    ${field('Год','newYear',2020,'number')}
-    ${field('Пробег','newMileage',0,'number')}
-    ${field('Цвет','newColor','')}
-    ${field('VIN','newVin','')}
-    ${field('Госномер','newPlate','')}
-    ${field('Цена покупки','newPurchase',1000000,'number')}
-    ${field('Плановая продажа','newSale',1200000,'number')}
-    ${field('Источник','newSource','')}
-    ${field('Ссылка на объявление','newUrl','')}
-    <div class="field"><label class="label">Комментарий</label><textarea id="newNote" rows="3"></textarea></div>
-    <button class="btn dark full" onclick="createCar()">Создать карточку</button>
-  </div>`);
-}
-function createCar(){
-  const c={id:Date.now(),brand:qs('#newBrand').value,model:qs('#newModel').value,year:Number(qs('#newYear').value||0),mileage:Number(qs('#newMileage').value||0),color:qs('#newColor').value,vin:qs('#newVin').value,plate:qs('#newPlate').value,status:'Подготовка',purchaseDate:today(),purchase:Number(qs('#newPurchase').value||0),targetSale:Number(qs('#newSale').value||0),actualSale:0,saleDate:'',photo:'',source:qs('#newSource').value,listingUrl:qs('#newUrl').value,note:qs('#newNote').value};
-  if(!c.brand||!c.model)return alert('Укажи марку и модель');
-  data.cars.unshift(c);save();closeModal();openCar(c.id);
-}
-function addExpense(carId){
-  openModal(`<div class="topbar"><div><h2>Новый расход</h2><div class="muted">${escapeHtml(carById(carId)?.brand||'')} ${escapeHtml(carById(carId)?.model||'')}</div></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
-  <div class="stack"><div class="field"><label class="label">Категория</label><select id="exCat"><option>Ремонт</option><option>ТО</option><option>Косметика</option><option>Диагностика</option><option>Документы</option><option>Транспорт</option><option>Прочее</option></select></div>${field('Сумма','exAmount',10000,'number')}${field('Комментарий','exNote','')}<button class="btn dark full" onclick="createExpense(${carId})">Добавить</button></div>`);
-}
-function createExpense(carId){data.expenses.unshift({id:Date.now(),carId,date:today(),category:qs('#exCat').value,amount:Number(qs('#exAmount').value||0),note:qs('#exNote').value});save();closeModal();render()}
-function deleteExpense(id){if(!confirm('Удалить расход?'))return;data.expenses=data.expenses.filter(x=>x.id!==id);save();render()}
-function setStatus(id,status){const c=carById(id);if(!c)return;c.status=status;save();render()}
-function markSold(id){const c=carById(id);if(!c)return;if(c.status==='Продан')return;c.status='Продан';c.saleDate=today();c.actualSale=c.actualSale||c.targetSale;save();render()}
-function editCar(id){
-  const c=carById(id);if(!c)return;
-  openModal(`<div class="topbar"><div><h2>Изменить автомобиль</h2></div><button class="icon-btn" onclick="closeModal()">✕</button></div><div class="stack">${field('Цена покупки','edPurchase',c.purchase,'number')}${field('Плановая продажа','edSale',c.targetSale,'number')}${field('Пробег','edMileage',c.mileage,'number')}${field('VIN','edVin',c.vin)}${field('Госномер','edPlate',c.plate)}${field('Ссылка','edUrl',c.listingUrl)}<div class="field"><label class="label">Комментарий</label><textarea id="edNote" rows="3">${escapeHtml(c.note||'')}</textarea></div><button class="btn dark full" onclick="saveCarEdit(${id})">Сохранить</button></div>`);
-}
-function saveCarEdit(id){const c=carById(id);c.purchase=Number(qs('#edPurchase').value||0);c.targetSale=Number(qs('#edSale').value||0);c.mileage=Number(qs('#edMileage').value||0);c.vin=qs('#edVin').value;c.plate=qs('#edPlate').value;c.listingUrl=qs('#edUrl').value;c.note=qs('#edNote').value;save();closeModal();render()}
-function openTaskModal(){
-  openModal(`<div class="topbar"><div><h2>Новая задача</h2></div><button class="icon-btn" onclick="closeModal()">✕</button></div><div class="stack">${field('Задача','taskTitle','')}<div class="field"><label class="label">Автомобиль</label><select id="taskCar">${data.cars.map(c=>`<option value="${c.id}">${escapeHtml(c.brand)} ${escapeHtml(c.model)}</option>`).join('')}</select></div><div class="field"><label class="label">Приоритет</label><select id="taskPriority"><option>Высокий</option><option selected>Средний</option><option>Низкий</option></select></div><div class="field"><label class="label">Срок</label><input class="input" id="taskDue" type="date" value="${today()}"></div><button class="btn dark full" onclick="createTask()">Создать</button></div>`);
-}
-function createTask(){const title=qs('#taskTitle').value;if(!title)return alert('Введите задачу');data.tasks.unshift({id:Date.now(),title,carId:Number(qs('#taskCar').value),priority:qs('#taskPriority').value,due:qs('#taskDue').value,done:false});save();closeModal();render()}
-function toggleTask(id){const t=data.tasks.find(x=>x.id===id);if(t)t.done=!t.done;save();render()}
-function saveSettings(){
-  settings.syncUrl=qs('#syncUrl').value.trim();settings.apiKey=qs('#apiKey').value.trim();save();alert('Настройки сохранены');render()
-}
-async function syncNow(){
-  const url=(qs('#syncUrl')?.value||settings.syncUrl||'').trim(); const key=(qs('#apiKey')?.value||settings.apiKey||'').trim();
-  if(!url)return alert('Укажи URL Google Apps Script');
-  settings.syncUrl=url;settings.apiKey=key;save();
-  const endpoint=url+(url.includes('?')?'&':'?')+'key='+encodeURIComponent(key);
-  const payload={type:'autoflip_crm_sync',sentAt:new Date().toISOString(),data};
-  const box=qs('#syncStatus');if(box)box.textContent='Отправка…';
-  try{
-    await fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
-    if(box)box.textContent='Запрос отправлен. Проверь лист «История синхронизации» в Google Sheets.';
-  }catch(e){
-    if(box)box.textContent='Ошибка отправки: '+e.message;
-  }
-}
-function openSyncHelp(){
-  openModal(`<div class="topbar"><div><h2>Проверка подключения</h2></div><button class="icon-btn" onclick="closeModal()">✕</button></div>
-  <div class="stack"><div class="goodbox"><b>Как проверить</b><div class="small" style="margin-top:6px">1. Сохрани URL и API ключ. 2. Нажми «Синхронизировать сейчас». 3. Открой Google Sheets и проверь лист «История синхронизации».</div></div><button class="btn blue full" onclick="window.open('${escapeHtml(settings.syncUrl||'about:blank')}','_blank')">Открыть Web App URL</button><button class="btn light full" onclick="closeModal()">Закрыть</button></div>`);
-}
-function exportBackup(){
-  const blob=new Blob([JSON.stringify({exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='autoflip-crm-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)
-}
-function importBackup(event){
-  const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);const incoming=parsed.data||parsed;if(!incoming.cars||!incoming.expenses||!incoming.clients||!incoming.tasks)throw new Error('bad');data=incoming;save();render();alert('Резервная копия восстановлена')}catch{alert('Неверный файл резервной копии')}};reader.readAsText(file)
-}
-function openModal(html){qs('#modal').innerHTML=html;qs('#modalWrap').classList.add('show')}
-function closeModal(){qs('#modalWrap').classList.remove('show');qs('#modal').innerHTML=''}
-qs('#modalWrap').addEventListener('click',e=>{if(e.target.id==='modalWrap')closeModal()})
-document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>setScreen(b.dataset.nav)));
-render();
-</script>
+</div>
 
-<script>
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
-  });
-}
-</script>
+</div>
+
+
+
+<div class="card">
+
+Последние действия
+
+<p>
+Нет данных
+</p>
+
+</div>
+
+
+
+<div class="button">
+
+➕ Новая сделка
+
+</div>
+
+
+
+</div>
+
+
+
+<div class="bottom">
+
+
+<div class="menu-item">
+<span>🏠</span>
+Главная
+</div>
+
+
+<div class="menu-item">
+<span>🚗</span>
+Авто
+</div>
+
+
+<div class="menu-item">
+<span>➕</span>
+Сделка
+</div>
+
+
+<div class="menu-item">
+<span>👥</span>
+Клиенты
+</div>
+
+
+<div class="menu-item">
+<span>📊</span>
+Финансы
+</div>
+
+
+</div>
+
+
 </body>
 </html>
