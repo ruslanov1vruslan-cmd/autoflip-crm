@@ -204,7 +204,11 @@ ${profit.toLocaleString()} ₽
 💰 Продать автомобиль
 
 </div>
+<div class="button" onclick="showInvestorPayment(${car.id})">
 
+👤 Инвестор
+
+</div>
 <div class="button" onclick="showCars()">
 
 ← Назад к автомобилям
