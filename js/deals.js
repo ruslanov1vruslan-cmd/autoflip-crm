@@ -153,6 +153,18 @@ profit:0
 addCar(car);
 
 
+const createPrep = confirm(
+"Создать стандартную подготовку автомобиля?"
+);
+
+
+if(createPrep){
+
+createDefaultPreparation(car.id);
+
+}
+
+
 
 alert("Автомобиль добавлен");
 
