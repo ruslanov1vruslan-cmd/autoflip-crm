@@ -184,7 +184,11 @@ ${sale.toLocaleString()} ₽
 ${profit.toLocaleString()} ₽
 
 </p>
+<div class="button" onclick="openPreparation(${car.id})">
 
+🔧 Подготовка
+
+</div>
 
 
 </div>
