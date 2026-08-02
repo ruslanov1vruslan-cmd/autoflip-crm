@@ -287,5 +287,70 @@ return Math.round(
 (done / car.preparation.length) * 100
 );
 
+function createDefaultPreparation(carId){
 
+
+const cars = getCars();
+
+
+const car =
+cars.find(
+item => item.id === carId
+);
+
+
+
+if(!car){
+
+return;
+
+}
+
+
+
+car.preparation = [
+
+
+{
+id: Date.now(),
+title:"Диагностика",
+done:false
+},
+
+
+{
+id: Date.now()+1,
+title:"Техническое обслуживание",
+done:false
+},
+
+
+{
+id: Date.now()+2,
+title:"Мойка",
+done:false
+},
+
+
+{
+id: Date.now()+3,
+title:"Химчистка",
+done:false
+},
+
+
+{
+id: Date.now()+4,
+title:"Проверка документов",
+done:false
+}
+
+
+];
+
+
+saveCars(cars);
+
+
+}
 }
