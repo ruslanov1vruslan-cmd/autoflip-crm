@@ -24,7 +24,33 @@ return;
 
 
 
-const profit = Number(car.profit || 0);
+if(!car.investor){
+
+car.investor = {
+
+name:"",
+amount:0,
+percent:0,
+paymentStatus:"Ожидает"
+
+};
+
+}
+
+
+
+const investor = car.investor;
+
+
+
+const profit =
+Number(car.profit || 0);
+
+
+
+const investorProfit =
+profit * Number(investor.percent || 0) / 100;
+
 
 
 
@@ -36,31 +62,70 @@ document.getElementById("app").innerHTML = `
 
 
 <h2>
-👤 Выплата инвестору
+👤 Инвестор
 </h2>
 
 
 
+<div class="label">
+Имя инвестора
+</div>
+
+
+<input
+id="investorName"
+class="input"
+value="${investor.name || ""}"
+placeholder="Имя"
+>
+
+
+
+
+<div class="label">
+Сумма вложения
+</div>
+
+
+<input
+id="investorAmount"
+class="input"
+value="${investor.amount || ""}"
+placeholder="1000000"
+>
+
+
+
+
+<div class="label">
+Доля %
+</div>
+
+
+<input
+id="investorPercent"
+class="input"
+value="${investor.percent || ""}"
+placeholder="50"
+>
+
+
+
+
+<div class="card">
+
+
+<h3>
+📊 Расчёт
+</h3>
+
+
+
 <p>
 
-Автомобиль:
+Прибыль автомобиля:
 
 <b>
-
-${car.brand} ${car.model}
-
-</b>
-
-</p>
-
-
-
-
-<p>
-
-Прибыль:
-
-<b class="profit">
 
 ${profit.toLocaleString()} ₽
 
@@ -70,11 +135,31 @@ ${profit.toLocaleString()} ₽
 
 
 
+<p>
+
+Прибыль инвестора:
+
+<b class="profit">
+
+${investorProfit.toLocaleString()} ₽
+
+</b>
+
+</p>
+
+
+
+</div>
+
+
+
+
 
 <select id="investorStatus" class="input">
 
 
-<option value="Ожидает">
+<option value="Ожидает"
+${investor.paymentStatus==="Ожидает"?"selected":""}>
 
 Ожидает
 
@@ -82,7 +167,8 @@ ${profit.toLocaleString()} ₽
 
 
 
-<option value="Выплачен">
+<option value="Выплачен"
+${investor.paymentStatus==="Выплачен"?"selected":""}>
 
 Выплачен
 
@@ -96,10 +182,9 @@ ${profit.toLocaleString()} ₽
 
 
 <div class="button"
-
 onclick="saveInvestorPayment(${car.id})">
 
-💰 Сохранить выплату
+💾 Сохранить
 
 </div>
 
@@ -107,7 +192,6 @@ onclick="saveInvestorPayment(${car.id})">
 
 
 <div class="button"
-
 onclick="openCarCard(${car.id})">
 
 ← Назад
@@ -117,7 +201,6 @@ onclick="openCarCard(${car.id})">
 
 
 </div>
-
 
 
 `;
@@ -153,26 +236,41 @@ return;
 
 
 
-const status =
-document.getElementById("investorStatus").value;
+car.investor = {
 
 
-
-if(!car.investor){
-
-car.investor = {};
-
-}
+name:
+document.getElementById("investorName").value,
 
 
+amount:
+Number(
+document.getElementById("investorAmount").value || 0
+),
 
-car.investor.paymentStatus = status;
+
+percent:
+Number(
+document.getElementById("investorPercent").value || 0
+),
+
+
+paymentStatus:
+document.getElementById("investorStatus").value,
+
+
+paymentDate:
+new Date().toLocaleDateString()
+
+
+};
+
 
 
 
 if(!car.history){
 
-car.history = [];
+car.history=[];
 
 }
 
@@ -185,10 +283,9 @@ new Date().toLocaleDateString(),
 
 
 action:
-`Выплата инвестору: ${status}`
+`Инвестор: ${car.investor.name}, статус выплаты: ${car.investor.paymentStatus}`
 
 });
-
 
 
 
@@ -197,7 +294,7 @@ saveCars(cars);
 
 
 
-alert("Статус выплаты сохранён");
+alert("Инвестор сохранён");
 
 
 
