@@ -5,10 +5,7 @@
 function openCarCard(id){
 
 
-const cars = getCars();
-
-
-const car = cars.find(item => item.id === id);
+const car = getCarById(id);
 
 
 
@@ -22,9 +19,9 @@ return;
 
 
 
-const expenses = Number(car.expenses || 0);
-
 const buy = Number(car.buyPrice || 0);
+
+const expenses = Number(car.expenses || 0);
 
 const sale = Number(car.salePrice || 0);
 
@@ -43,6 +40,7 @@ profit = sale - buy - expenses;
 document.getElementById("app").innerHTML = `
 
 
+
 <div class="card">
 
 
@@ -57,51 +55,47 @@ ${car.brand} ${car.model}
 <span class="status ${getStatusClass(car.status)}">
 
 ${getStatusIcon(car.status)}
+
 ${car.status}
 
 </span>
 
 
-<br><br>
+
+</div>
+
+
+
 
 
 <div class="card">
 
 
-<div class="label">
+<h3>
 
-Автомобиль
+🚗 Автомобиль
 
-</div>
+</h3>
 
 
 <p>
-
-Год: ${car.year}
-
+Год: ${car.year || "-"}
 </p>
 
 
 <p>
-
-Пробег: ${car.mileage} км
-
+Пробег: ${car.mileage || 0} км
 </p>
 
 
 <p>
-
 VIN: ${car.vin || "-"}
-
 </p>
 
 
 <p>
-
 Госномер: ${car.number || "-"}
-
 </p>
-
 
 
 </div>
@@ -122,57 +116,41 @@ VIN: ${car.vin || "-"}
 
 
 <p>
-
 Покупка:
 
 <b>
-
 ${buy.toLocaleString()} ₽
-
 </b>
-
 </p>
 
 
 
 <p>
-
 Расходы:
 
 <b>
-
 ${expenses.toLocaleString()} ₽
-
 </b>
-
 </p>
 
 
 
 <p>
-
 Себестоимость:
 
 <b>
-
 ${(buy + expenses).toLocaleString()} ₽
-
 </b>
-
 </p>
 
 
 
 <p>
-
 Продажа:
 
 <b>
-
 ${sale.toLocaleString()} ₽
-
 </b>
-
 </p>
 
 
@@ -184,6 +162,15 @@ ${sale.toLocaleString()} ₽
 ${profit.toLocaleString()} ₽
 
 </p>
+
+
+
+</div>
+
+
+
+
+
 <div class="button" onclick="openPreparation(${car.id})">
 
 🔧 Подготовка
@@ -191,34 +178,66 @@ ${profit.toLocaleString()} ₽
 </div>
 
 
-</div>
+
 
 <div class="button" onclick="addExpenseForm(${car.id})">
 
 💸 Добавить расход
 
 </div>
+
+
+
+
 <div class="button" onclick="changeStatusForm(${car.id})">
 
 🔄 Изменить статус
 
 </div>
+
+
+
+
 <div class="button" onclick="sellCarForm(${car.id})">
 
 💰 Продать автомобиль
 
 </div>
+
+
+
+
 <div class="button" onclick="showInvestorPayment(${car.id})">
 
 👤 Инвестор
 
 </div>
-<div class="button" onclick="showCars()">
 
-← Назад к автомобилям
+
+
+
+<div class="button" onclick="deleteCarConfirm(${car.id})">
+
+🗑 Удалить автомобиль
 
 </div>
 
+
+
+
+<div class="button" onclick="showCars()">
+
+← Назад
+
+</div>
+
+
+
+`;
+
+
+
+}
 
 
 `;
