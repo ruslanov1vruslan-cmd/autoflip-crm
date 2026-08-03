@@ -77,24 +77,41 @@ ${car.status}
 </h3>
 
 
+
 <p>
-Год: ${car.year || "-"}
+Год:
+<b>
+${car.year || "-"}
+</b>
 </p>
 
 
+
 <p>
-Пробег: ${car.mileage || 0} км
+Пробег:
+<b>
+${car.mileage || 0} км
+</b>
 </p>
 
 
+
 <p>
-VIN: ${car.vin || "-"}
+VIN:
+<b>
+${car.vin || "-"}
+</b>
 </p>
 
 
+
 <p>
-Госномер: ${car.number || "-"}
+Госномер:
+<b>
+${car.number || "-"}
+</b>
 </p>
+
 
 
 </div>
@@ -107,8 +124,9 @@ VIN: ${car.vin || "-"}
 
 
 <h3>
-💰 Деньги
+💰 Финансы
 </h3>
+
 
 
 
@@ -117,10 +135,13 @@ VIN: ${car.vin || "-"}
 Покупка:
 
 <b>
+
 ${buy.toLocaleString()} ₽
+
 </b>
 
 </p>
+
 
 
 
@@ -129,10 +150,13 @@ ${buy.toLocaleString()} ₽
 Расходы:
 
 <b>
+
 ${expenses.toLocaleString()} ₽
+
 </b>
 
 </p>
+
 
 
 
@@ -141,10 +165,13 @@ ${expenses.toLocaleString()} ₽
 Себестоимость:
 
 <b>
+
 ${(buy + expenses).toLocaleString()} ₽
+
 </b>
 
 </p>
+
 
 
 
@@ -153,10 +180,13 @@ ${(buy + expenses).toLocaleString()} ₽
 Продажа:
 
 <b>
+
 ${sale.toLocaleString()} ₽
+
 </b>
 
 </p>
+
 
 
 
@@ -176,17 +206,9 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="openPreparation(${car.id})">
 
-🔧 Подготовка
-
-</div>
-
-
-
-
-
-<div class="button" onclick="addExpenseForm(${car.id})">
+<div class="button"
+onclick="addExpenseForm(${car.id})">
 
 💸 Добавить расход
 
@@ -196,7 +218,8 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="changeStatusForm(${car.id})">
+<div class="button"
+onclick="changeStatusForm(${car.id})">
 
 🔄 Изменить статус
 
@@ -206,7 +229,8 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="sellCarForm(${car.id})">
+<div class="button"
+onclick="sellCarForm(${car.id})">
 
 💰 Продать автомобиль
 
@@ -216,7 +240,8 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="showInvestorPayment(${car.id})">
+<div class="button"
+onclick="showInvestorPayment(${car.id})">
 
 👤 Инвестор
 
@@ -226,7 +251,19 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="showCars()">
+<div class="button"
+onclick="showHistory(${car.id})">
+
+📜 История
+
+</div>
+
+
+
+
+
+<div class="button"
+onclick="showCars()">
 
 ← Назад к автомобилям
 
