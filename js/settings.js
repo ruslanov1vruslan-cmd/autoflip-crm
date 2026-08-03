@@ -3,46 +3,79 @@
 
 const SETTINGS_KEY = "autoflip_settings";
 
+function getDefaultExpenseCategories() {
+    return [
+        "Ремонт",
+        "Запчасти",
+        "Мойка",
+        "Документы",
+        "Страховка",
+        "Другое"
+    ];
+}
+
+function normalizeExpenseCategories(categories) {
+    const list = Array.isArray(categories) ? categories : [];
+    const cleaned = list
+        .map(item => String(item || "").trim())
+        .filter(Boolean);
+
+    const unique = [];
+    cleaned.forEach(item => {
+        if (!unique.includes(item)) {
+            unique.push(item);
+        }
+    });
+
+    return unique.length > 0 ? unique : getDefaultExpenseCategories();
+}
+
 function getSettings() {
     const raw = localStorage.getItem(SETTINGS_KEY);
 
+    const defaults = {
+        companyName: "AutoFlip CRM",
+        ownerName: "",
+        currency: "₽",
+        investorDefaultPercent: 30,
+        expenseCategories: getDefaultExpenseCategories()
+    };
+
     if (!raw) {
-        return {
-            companyName: "AutoFlip CRM",
-            ownerName: "",
-            currency: "₽",
-            investorDefaultPercent: 30
-        };
+        return defaults;
     }
 
     try {
         const parsed = JSON.parse(raw);
 
         return {
-            companyName: "AutoFlip CRM",
-            ownerName: "",
-            currency: "₽",
-            investorDefaultPercent: 30,
-            ...parsed
+            ...defaults,
+            ...parsed,
+            expenseCategories: normalizeExpenseCategories(parsed.expenseCategories)
         };
     } catch (error) {
         console.error("Ошибка чтения настроек:", error);
-
-        return {
-            companyName: "AutoFlip CRM",
-            ownerName: "",
-            currency: "₽",
-            investorDefaultPercent: 30
-        };
+        return defaults;
     }
 }
 
 function saveSettings(settings) {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    const normalized = {
+        ...getSettings(),
+        ...settings,
+        expenseCategories: normalizeExpenseCategories(settings.expenseCategories)
+    };
+
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(normalized));
+}
+
+function getExpenseCategories() {
+    return normalizeExpenseCategories(getSettings().expenseCategories);
 }
 
 function showSettings() {
     const settings = getSettings();
+    const categories = getExpenseCategories();
 
     document.getElementById("app").innerHTML = `
         <div class="card">
@@ -65,6 +98,26 @@ function showSettings() {
 
             <div class="button" onclick="saveAppSettings()">
                 💾 Сохранить настройки
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>💸 Статьи расходов</h3>
+            <div class="label">Быстрый выбор в расходах</div>
+
+            <div id="expenseCategoriesList">
+                ${renderExpenseCategories(categories)}
+            </div>
+
+            <div class="label" style="margin-top:16px;">Добавить новую статью</div>
+            <input id="newExpenseCategory" class="input" type="text" placeholder="Например: Шиномонтаж">
+
+            <div class="button" onclick="addExpenseCategory()">
+                ➕ Добавить статью
+            </div>
+
+            <div class="button" onclick="saveExpenseCategories()">
+                💾 Сохранить список статей
             </div>
         </div>
 
@@ -101,12 +154,79 @@ function showSettings() {
     `;
 }
 
+function renderExpenseCategories(categories) {
+    if (!categories.length) {
+        return `<p>Список статей пуст</p>`;
+    }
+
+    return categories
+        .map((category, index) => `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; margin-bottom:10px;">
+                <div>${escapeSettingsHtml(category)}</div>
+                <button type="button" onclick="removeExpenseCategory(${index})" style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 12px; cursor:pointer;">
+                    Удалить
+                </button>
+            </div>
+        `)
+        .join("");
+}
+
+function addExpenseCategory() {
+    const input = document.getElementById("newExpenseCategory");
+    const value = String(input.value || "").trim();
+
+    if (!value) {
+        alert("Введите название статьи");
+        return;
+    }
+
+    const settings = getSettings();
+    const categories = getExpenseCategories();
+
+    if (categories.includes(value)) {
+        alert("Такая статья уже есть");
+        return;
+    }
+
+    categories.push(value);
+    settings.expenseCategories = categories;
+    saveSettings(settings);
+
+    input.value = "";
+    showSettings();
+}
+
+function removeExpenseCategory(index) {
+    const settings = getSettings();
+    const categories = getExpenseCategories();
+
+    if (categories.length <= 1) {
+        alert("Должна остаться хотя бы одна статья");
+        return;
+    }
+
+    categories.splice(index, 1);
+    settings.expenseCategories = categories;
+    saveSettings(settings);
+
+    showSettings();
+}
+
+function saveExpenseCategories() {
+    const settings = getSettings();
+    settings.expenseCategories = getExpenseCategories();
+    saveSettings(settings);
+    alert("Статьи расходов сохранены");
+    showSettings();
+}
+
 function saveAppSettings() {
     const settings = {
         companyName: document.getElementById("settingCompanyName").value.trim() || "AutoFlip CRM",
         ownerName: document.getElementById("settingOwnerName").value.trim() || "",
         currency: document.getElementById("settingCurrency").value.trim() || "₽",
-        investorDefaultPercent: Number(document.getElementById("settingInvestorPercent").value || 30)
+        investorDefaultPercent: Number(document.getElementById("settingInvestorPercent").value || 30),
+        expenseCategories: getExpenseCategories()
     };
 
     saveSettings(settings);
