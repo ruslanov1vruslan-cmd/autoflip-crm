@@ -1,5 +1,5 @@
 // AutoFlip CRM 2.0
-// Единый финансовый расчёт
+// Единая аналитика
 
 
 function getAnalytics(){
@@ -25,30 +25,20 @@ let soldCars = 0;
 
 
 
-
 cars.forEach(car => {
 
 
 
-const buy =
-Number(car.buyPrice || 0);
+const buy = Number(car.buyPrice || 0);
 
+const expenses = Number(car.expenses || 0);
 
-
-const expenses =
-Number(car.expenses || 0);
-
-
-
-const sale =
-Number(car.salePrice || 0);
-
+const sale = Number(car.salePrice || 0);
 
 
 
 
 totalBuy += buy;
-
 
 totalExpenses += expenses;
 
@@ -61,6 +51,7 @@ if(car.status === "Продано"){
 soldCars++;
 
 
+
 if(sale > 0){
 
 
@@ -71,6 +62,7 @@ totalProfit += sale - buy - expenses;
 
 
 }
+
 
 
 }
@@ -96,30 +88,28 @@ moneyInCars += buy + expenses;
 return {
 
 
-carsCount:
-cars.length,
+carsCount: cars.length,
 
 
-activeCars,
+activeCars: activeCars,
 
 
-soldCars,
+soldCars: soldCars,
 
 
-moneyInCars,
+moneyInCars: moneyInCars,
 
 
-totalBuy,
+totalBuy: totalBuy,
 
 
-totalExpenses,
+totalExpenses: totalExpenses,
 
 
-totalSales,
+totalSales: totalSales,
 
 
-totalProfit
-
+totalProfit: totalProfit
 
 
 };
