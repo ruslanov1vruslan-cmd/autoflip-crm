@@ -54,7 +54,7 @@ function showCars(filter = currentCarFilter, search = currentCarSearch) {
             >
 
             <div class="filter-row">
-                <button onclick="showCars('Все', document.getElementById('carSearchInput').value)">Все</button>
+                <button onclick="showCars('Все', document.getElementById('carSearchInput').value)">Все (${cars.length})</button>
                 <button onclick="showCars('Куплено', document.getElementById('carSearchInput').value)">💰 Куплено</button>
                 <button onclick="showCars('Подготовка', document.getElementById('carSearchInput').value)">🔧 Подготовка</button>
                 <button onclick="showCars('В продаже', document.getElementById('carSearchInput').value)">🟢 В продаже</button>
@@ -114,6 +114,13 @@ function showCars(filter = currentCarFilter, search = currentCarSearch) {
                     Покупка:
                     <b>${Number(car.buyPrice || 0).toLocaleString()} ₽</b>
                 </div>
+
+                <br>
+
+                <div>
+                    Расходы:
+                    <b>${Number(car.expenses || 0).toLocaleString()} ₽</b>
+                </div>
             </div>
         `;
     });
@@ -162,5 +169,4 @@ function escapeHtml(value) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
-}
 }
