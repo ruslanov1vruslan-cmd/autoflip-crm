@@ -76,7 +76,7 @@ const cars = getCars();
 
 
 const car = cars.find(
-item => item.id === carId
+item => item.id == carId
 );
 
 
@@ -94,8 +94,29 @@ return;
 const oldStatus = car.status;
 
 
+
 const newStatus =
 document.getElementById("newStatus").value;
+
+
+
+if(!newStatus){
+
+alert("Выберите статус");
+
+return;
+
+}
+
+
+
+if(oldStatus === newStatus){
+
+alert("Статус уже установлен");
+
+return;
+
+}
 
 
 
@@ -132,6 +153,10 @@ alert("Статус обновлён");
 
 
 
+openCarCard(carId);
+
+
+}
 openCarCard(carId);
 
 
