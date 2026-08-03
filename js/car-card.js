@@ -29,10 +29,10 @@ const buy = Number(car.buyPrice || 0);
 const sale = Number(car.salePrice || 0);
 
 
-let profit = 0;
+let profit = Number(car.profit || 0);
 
 
-if(sale > 0){
+if(!profit && sale > 0){
 
 profit = sale - buy - expenses;
 
