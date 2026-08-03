@@ -74,8 +74,7 @@ ${car.brand} ${car.model}
 </h3>
 
 
-<span class="status buy">
-
+<span class="status ${getStatusClass(car.status)}">
 💰 ${car.status}
 
 </span>
@@ -127,7 +126,34 @@ car.profit > 0
 
 `;
 
+function getStatusClass(status){
 
+
+if(status==="В продаже"){
+
+return "sale";
+
+}
+
+
+if(status==="Подготовка"){
+
+return "prepare";
+
+}
+
+
+if(status==="Продано"){
+
+return "sale";
+
+}
+
+
+return "buy";
+
+
+}
 });
 
 
