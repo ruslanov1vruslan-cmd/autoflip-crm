@@ -9,19 +9,11 @@ function openCarCard(id) {
         return;
     }
 
-    const buy = Number(car.buyPrice || 0);
-    const expenses = Number(car.expenses || 0);
-    const sale = Number(car.salePrice || 0);
+    const econ = getCarEconomics(car);
 
-    let profit = Number(car.profit || 0);
-    if (!profit && sale > 0) {
-        profit = sale - buy - expenses;
-    }
-
-    const investorName = car.investor?.name || "—";
-    const investorPercent = Number(car.investor?.percent || 0);
-    const investorStatus = car.investor?.paymentStatus || "Ожидает";
-    const investorProfit = profit > 0 ? (profit * investorPercent / 100) : 0;
+    const investorName = car.investor && car.investor.name ? car.investor.name : "—";
+    const investorPercent = Number(car.investor && car.investor.percent ? car.investor.percent : 0);
+    const investorStatus = car.investor && car.investor.paymentStatus ? car.investor.paymentStatus : "Ожидает";
 
     const historyHtml = renderCarHistory(car);
 
@@ -48,19 +40,22 @@ function openCarCard(id) {
         <div class="card">
             <h3>💰 Финансы</h3>
 
-            <p>Покупка: <b>${buy.toLocaleString("ru-RU")} ₽</b></p>
-            <p>Расходы: <b>${expenses.toLocaleString("ru-RU")} ₽</b></p>
-            <p>Себестоимость: <b>${(buy + expenses).toLocaleString("ru-RU")} ₽</b></p>
-            <p>Продажа: <b>${sale.toLocaleString("ru-RU")} ₽</b></p>
-            <p class="profit">Прибыль: ${profit.toLocaleString("ru-RU")} ₽</p>
+            <p>Покупка: <b>${econ.buy.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Расходы: <b>${econ.expenses.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Себестоимость: <b>${(econ.buy + econ.expenses).toLocaleString("ru-RU")} ₽</b></p>
+            <p>Продажа: <b>${econ.sale.toLocaleString("ru-RU")} ₽</b></p>
+
+            <p>Валовая прибыль: <b>${econ.grossProfit.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Доля инвестора: <b>${econ.investorPayout.toLocaleString("ru-RU")} ₽</b></p>
+            <p class="profit">Прибыль владельца: ${econ.ownerProfit.toLocaleString("ru-RU")} ₽</p>
         </div>
 
         <div class="card">
             <h3>👤 Инвестор</h3>
-            <p>Имя: <b>${investorName}</b></p>
+            <p>Имя: <b>${escapeCardHtml(investorName)}</b></p>
             <p>Доля: <b>${investorPercent}%</b></p>
-            <p>К выплате: <b>${investorProfit.toLocaleString("ru-RU")} ₽</b></p>
-            <p>Статус выплаты: <b>${investorStatus}</b></p>
+            <p>К выплате: <b>${econ.investorPayout.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Статус выплаты: <b>${escapeCardHtml(investorStatus)}</b></p>
         </div>
 
         <div class="button" onclick="addExpenseForm(${car.id})">
@@ -111,22 +106,22 @@ function openEditCarForm(id) {
             <h2>✏️ Редактировать автомобиль</h2>
 
             <div class="label">Марка</div>
-            <input id="editBrand" class="input" value="${escapeHtml(car.brand || "")}">
+            <input id="editBrand" class="input" value="${escapeCardHtml(car.brand || "")}">
 
             <div class="label">Модель</div>
-            <input id="editModel" class="input" value="${escapeHtml(car.model || "")}">
+            <input id="editModel" class="input" value="${escapeCardHtml(car.model || "")}">
 
             <div class="label">Год</div>
-            <input id="editYear" class="input" value="${escapeHtml(car.year || "")}">
+            <input id="editYear" class="input" value="${escapeCardHtml(car.year || "")}">
 
             <div class="label">Пробег</div>
-            <input id="editMileage" class="input" value="${escapeHtml(car.mileage || "")}">
+            <input id="editMileage" class="input" value="${escapeCardHtml(car.mileage || "")}">
 
             <div class="label">VIN</div>
-            <input id="editVin" class="input" value="${escapeHtml(car.vin || "")}">
+            <input id="editVin" class="input" value="${escapeCardHtml(car.vin || "")}">
 
             <div class="label">Госномер</div>
-            <input id="editNumber" class="input" value="${escapeHtml(car.number || "")}">
+            <input id="editNumber" class="input" value="${escapeCardHtml(car.number || "")}">
 
             <div class="label">Цена покупки</div>
             <input id="editBuyPrice" class="input" type="number" min="0" value="${Number(car.buyPrice || 0)}">
@@ -201,9 +196,9 @@ function renderCarHistory(car) {
         .reverse()
         .map(item => `
             <div class="card">
-                <b>${item.date || ""}</b>
+                <b>${escapeCardHtml(item.date || "")}</b>
                 <br><br>
-                ${item.action || ""}
+                ${escapeCardHtml(item.action || "")}
             </div>
         `)
         .join("");
@@ -243,7 +238,7 @@ function cardGetStatusIcon(status) {
     }
 }
 
-function escapeHtml(value) {
+function escapeCardHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
