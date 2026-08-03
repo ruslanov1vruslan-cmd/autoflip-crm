@@ -148,7 +148,7 @@ profit:0
 
 
 
-addCar(car);
+const savedCar = addCar(car);
 
 
 const createPrep = confirm(
@@ -158,10 +158,9 @@ const createPrep = confirm(
 
 if(createPrep){
 
-createDefaultPreparation(car.id);
+createDefaultPreparation(savedCar.id);
 
 }
-
 
 
 alert("Автомобиль добавлен");
