@@ -1,139 +1,219 @@
 // AutoFlip CRM 2.0
-// Автомобили + фильтры
+// Карточка автомобиля
 
-function showCars(filter = "Все") {
-    const cars = getCars();
+function openCarCard(id) {
+    const car = getCarById(id);
 
-    let filteredCars = cars;
-
-    if (filter !== "Все") {
-        filteredCars = cars.filter(car => car.status === filter);
+    if (!car) {
+        alert("Автомобиль не найден");
+        return;
     }
 
-    let html = `
+    const buy = Number(car.buyPrice || 0);
+    const expenses = Number(car.expenses || 0);
+    const sale = Number(car.salePrice || 0);
+
+    let profit = Number(car.profit || 0);
+    if (!profit && sale > 0) {
+        profit = sale - buy - expenses;
+    }
+
+    const investorName = car.investor?.name || "—";
+    const investorPercent = Number(car.investor?.percent || 0);
+    const investorStatus = car.investor?.paymentStatus || "Ожидает";
+    const investorProfit = profit > 0 ? (profit * investorPercent / 100) : 0;
+
+    const historyHtml = renderCarHistory(car);
+
+    document.getElementById("app").innerHTML = `
         <div class="card">
-            <h2>🚗 Автомобили</h2>
-            <div class="label">Всего автомобилей: ${cars.length}</div>
+            <h2>${car.brand || ""} ${car.model || ""}</h2>
+
+            <span class="status ${getStatusClass(car.status)}">
+                ${getStatusIcon(car.status)}
+                ${car.status || "Без статуса"}
+            </span>
+
+            <br><br>
+
+            <div class="label">Основная информация</div>
+            <br>
+
+            <p>Год: <b>${car.year || "-"}</b></p>
+            <p>Пробег: <b>${car.mileage || 0} км</b></p>
+            <p>VIN: <b>${car.vin || "-"}</b></p>
+            <p>Госномер: <b>${car.number || "-"}</b></p>
         </div>
 
         <div class="card">
-            <div class="filter-row">
-                <button onclick="showCars('Все')">Все (${cars.length})</button>
-                <button onclick="showCars('Куплено')">💰 Куплено</button>
-                <button onclick="showCars('Подготовка')">🔧 Подготовка</button>
-                <button onclick="showCars('В продаже')">🟢 В продаже</button>
-                <button onclick="showCars('Резерв')">🟡 Резерв</button>
-                <button onclick="showCars('Продано')">✅ Продано</button>
-            </div>
+            <h3>💰 Финансы</h3>
+
+            <p>Покупка: <b>${buy.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Расходы: <b>${expenses.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Себестоимость: <b>${(buy + expenses).toLocaleString("ru-RU")} ₽</b></p>
+            <p>Продажа: <b>${sale.toLocaleString("ru-RU")} ₽</b></p>
+            <p class="profit">Прибыль: ${profit.toLocaleString("ru-RU")} ₽</p>
         </div>
 
-        <div class="button" onclick="openNewDeal()">
-            ➕ Добавить автомобиль
+        <div class="card">
+            <h3>👤 Инвестор</h3>
+            <p>Имя: <b>${investorName}</b></p>
+            <p>Доля: <b>${investorPercent}%</b></p>
+            <p>К выплате: <b>${investorProfit.toLocaleString("ru-RU")} ₽</b></p>
+            <p>Статус выплаты: <b>${investorStatus}</b></p>
+        </div>
+
+        <div class="button" onclick="addExpenseForm(${car.id})">
+            💸 Добавить расход
+        </div>
+
+        <div class="button" onclick="changeStatusForm(${car.id})">
+            🔄 Изменить статус
+        </div>
+
+        <div class="button" onclick="sellCarForm(${car.id})">
+            💰 Продать автомобиль
+        </div>
+
+        <div class="button" onclick="showInvestorPayment(${car.id})">
+            👤 Инвестор
+        </div>
+
+        <div class="button" onclick="openEditCarForm(${car.id})">
+            ✏️ Редактировать
+        </div>
+
+        <div class="button" onclick="deleteCarConfirm(${car.id})">
+            🗑 Удалить
+        </div>
+
+        <div class="card">
+            <h3>📜 История</h3>
+            ${historyHtml}
+        </div>
+
+        <div class="button" onclick="showCars()">
+            ← Назад к автомобилям
         </div>
     `;
+}
 
-    if (filteredCars.length === 0) {
-        html += `
-            <div class="card">
-                <center>
-                    🚗
-                    <h3>Автомобилей нет</h3>
-                    <p>В этом статусе машин нет</p>
-                </center>
-            </div>
-        `;
+function openEditCarForm(id) {
+    const car = getCarById(id);
+
+    if (!car) {
+        alert("Автомобиль не найден");
+        return;
     }
 
-    filteredCars.forEach(car => {
-        const profit = Number(car.profit || 0);
+    document.getElementById("app").innerHTML = `
+        <div class="card">
+            <h2>✏️ Редактировать автомобиль</h2>
 
-        html += `
-            <div class="car-card" onclick="openCarCard(${car.id})">
-                <h3>${car.brand || ""} ${car.model || ""}</h3>
+            <div class="label">Марка</div>
+            <input id="editBrand" class="input" value="${escapeHtml(car.brand || "")}">
 
-                <span class="status ${getStatusClass(car.status)}">
-                    ${getStatusIcon(car.status)}
-                    ${car.status || "Без статуса"}
-                </span>
+            <div class="label">Модель</div>
+            <input id="editModel" class="input" value="${escapeHtml(car.model || "")}">
 
-                <br><br>
+            <div class="label">Год</div>
+            <input id="editYear" class="input" value="${escapeHtml(car.year || "")}">
 
-                <div>Год: ${car.year || "-"}</div>
+            <div class="label">Пробег</div>
+            <input id="editMileage" class="input" value="${escapeHtml(car.mileage || "")}">
 
-                <br>
+            <div class="label">VIN</div>
+            <input id="editVin" class="input" value="${escapeHtml(car.vin || "")}">
 
-                <div>
-                    VIN:
-                    <b>${car.vin || "-"}</b>
-                </div>
+            <div class="label">Госномер</div>
+            <input id="editNumber" class="input" value="${escapeHtml(car.number || "")}">
 
-                <br>
+            <div class="label">Цена покупки</div>
+            <input id="editBuyPrice" class="input" value="${escapeHtml(car.buyPrice || "")}">
 
-                <div>
-                    Номер:
-                    <b>${car.number || "-"}</b>
-                </div>
-
-                <br>
-
-                <div>
-                    Покупка:
-                    <b>${Number(car.buyPrice || 0).toLocaleString("ru-RU")} ₽</b>
-                </div>
-
-                <br>
-
-                <div>
-                    Расходы:
-                    <b>${Number(car.expenses || 0).toLocaleString("ru-RU")} ₽</b>
-                </div>
-
-                <br>
-
-                <div class="profit">
-                    ${
-                        car.status === "Продано" && profit > 0
-                            ? "+" + profit.toLocaleString("ru-RU") + " ₽"
-                            : "В процессе"
-                    }
-                </div>
+            <div class="button" onclick="saveEditCar(${car.id})">
+                Сохранить изменения
             </div>
-        `;
+
+            <div class="button" onclick="openCarCard(${car.id})">
+                ← Назад
+            </div>
+        </div>
+    `;
+}
+
+function saveEditCar(id) {
+    const cars = getCars();
+    const car = cars.find(item => item.id == id);
+
+    if (!car) {
+        alert("Автомобиль не найден");
+        return;
+    }
+
+    car.brand = document.getElementById("editBrand").value.trim();
+    car.model = document.getElementById("editModel").value.trim();
+    car.year = document.getElementById("editYear").value.trim();
+    car.mileage = document.getElementById("editMileage").value.trim();
+    car.vin = document.getElementById("editVin").value.trim();
+    car.number = document.getElementById("editNumber").value.trim();
+    car.buyPrice = Number(document.getElementById("editBuyPrice").value || 0);
+
+    if (!Array.isArray(car.history)) {
+        car.history = [];
+    }
+
+    car.history.push({
+        date: new Date().toLocaleDateString("ru-RU"),
+        action: "Автомобиль отредактирован"
     });
 
-    document.getElementById("app").innerHTML = html;
+    saveCars(cars);
+    alert("Изменения сохранены");
+    openCarCard(id);
 }
 
-function getStatusClass(status) {
-    switch (status) {
-        case "В продаже":
-            return "sale";
-        case "Подготовка":
-            return "prepare";
-        case "Продано":
-            return "sale";
-        case "Резерв":
-            return "prepare";
-        case "Куплено":
-            return "buy";
-        default:
-            return "buy";
+function deleteCarConfirm(id) {
+    const car = getCarById(id);
+
+    if (!car) {
+        alert("Автомобиль не найден");
+        return;
     }
+
+    const ok = confirm(`Удалить автомобиль ${car.brand || ""} ${car.model || ""}?`);
+    if (!ok) return;
+
+    const cars = getCars().filter(item => item.id != id);
+    saveCars(cars);
+
+    alert("Автомобиль удалён");
+    showCars();
 }
 
-function getStatusIcon(status) {
-    switch (status) {
-        case "Куплено":
-            return "💰";
-        case "Подготовка":
-            return "🔧";
-        case "В продаже":
-            return "🟢";
-        case "Резерв":
-            return "🟡";
-        case "Продано":
-            return "✅";
-        default:
-            return "🚗";
+function renderCarHistory(car) {
+    if (!Array.isArray(car.history) || car.history.length === 0) {
+        return `<p>Пока нет событий</p>`;
     }
+
+    return car.history
+        .slice()
+        .reverse()
+        .map(item => `
+            <div class="card">
+                <b>${item.date || ""}</b>
+                <br><br>
+                ${item.action || ""}
+            </div>
+        `)
+        .join("");
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
