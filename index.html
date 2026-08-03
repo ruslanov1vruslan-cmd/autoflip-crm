@@ -4,21 +4,25 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>AutoFlip CRM</title>
+
 
 <link rel="manifest" href="manifest.webmanifest">
 
 
 <style>
 
-*{
+
+* {
 box-sizing:border-box;
 }
 
 
-body{
+
+body {
 
 margin:0;
 
@@ -36,7 +40,9 @@ sans-serif;
 }
 
 
-.header{
+
+
+.header {
 
 padding:24px;
 
@@ -49,7 +55,8 @@ align-items:center;
 }
 
 
-.logo{
+
+.logo {
 
 font-size:26px;
 
@@ -58,14 +65,17 @@ font-weight:700;
 }
 
 
-.icons{
 
-font-size:20px;
+.icons {
+
+font-size:22px;
 
 }
 
 
-.container{
+
+
+.container {
 
 padding:0 20px 100px;
 
@@ -73,7 +83,9 @@ padding:0 20px 100px;
 
 
 
-.card{
+
+
+.card {
 
 background:white;
 
@@ -90,7 +102,8 @@ box-shadow:
 
 
 
-.main-card{
+
+.main-card {
 
 background:#222;
 
@@ -100,9 +113,10 @@ color:white;
 
 
 
-.label{
 
-color:#717171;
+.label {
+
+color:#777;
 
 font-size:14px;
 
@@ -110,7 +124,7 @@ font-size:14px;
 
 
 
-.main-card .label{
+.main-card .label {
 
 color:#ddd;
 
@@ -118,7 +132,8 @@ color:#ddd;
 
 
 
-.big-number{
+
+.big-number {
 
 font-size:34px;
 
@@ -130,7 +145,8 @@ margin-top:8px;
 
 
 
-.stats{
+
+.stats {
 
 display:grid;
 
@@ -142,82 +158,9 @@ gap:15px;
 
 
 
-.car-card{
-
-background:white;
-
-border-radius:24px;
-
-padding:22px;
-
-margin-bottom:15px;
-
-box-shadow:
-0 8px 25px rgba(0,0,0,0.05);
-
-}
 
 
-
-.status{
-
-display:inline-block;
-
-padding:7px 14px;
-
-border-radius:20px;
-
-font-size:13px;
-
-font-weight:600;
-
-}
-
-
-
-.sale{
-
-background:#dcfce7;
-
-color:#15803d;
-
-}
-
-
-
-.prepare{
-
-background:#ffedd5;
-
-color:#c2410c;
-
-}
-
-
-
-.buy{
-
-background:#dbeafe;
-
-color:#1d4ed8;
-
-}
-
-
-
-.profit{
-
-color:#16a34a;
-
-font-size:22px;
-
-font-weight:700;
-
-}
-
-
-
-.input{
+.input {
 
 width:100%;
 
@@ -237,7 +180,90 @@ background:#fafafa;
 
 
 
-.button{
+
+
+.car-card {
+
+background:white;
+
+border-radius:24px;
+
+padding:22px;
+
+margin-bottom:15px;
+
+box-shadow:
+0 8px 25px rgba(0,0,0,0.05);
+
+}
+
+
+
+
+
+.status {
+
+display:inline-block;
+
+padding:7px 14px;
+
+border-radius:20px;
+
+font-size:13px;
+
+font-weight:600;
+
+}
+
+
+
+.sale {
+
+background:#dcfce7;
+
+color:#15803d;
+
+}
+
+
+
+.prepare {
+
+background:#ffedd5;
+
+color:#c2410c;
+
+}
+
+
+
+.buy {
+
+background:#dbeafe;
+
+color:#1d4ed8;
+
+}
+
+
+
+
+
+.profit {
+
+color:#16a34a;
+
+font-size:22px;
+
+font-weight:700;
+
+}
+
+
+
+
+
+.button {
 
 background:#ff385c;
 
@@ -253,13 +279,48 @@ font-weight:600;
 
 margin-top:20px;
 
-cursor:pointer;
+}
+
+
+
+
+.filter-row {
+
+display:flex;
+
+gap:8px;
+
+overflow-x:auto;
+
+padding-bottom:10px;
 
 }
 
 
 
-.bottom{
+.filter-row button {
+
+
+border:none;
+
+background:#f1f1f1;
+
+padding:10px 15px;
+
+border-radius:20px;
+
+white-space:nowrap;
+
+font-size:14px;
+
+}
+
+
+
+
+
+.bottom {
+
 
 position:fixed;
 
@@ -269,9 +330,12 @@ left:0;
 
 right:0;
 
+
 height:80px;
 
+
 background:white;
+
 
 display:flex;
 
@@ -279,13 +343,17 @@ justify-content:space-around;
 
 align-items:center;
 
+
 border-top:1px solid #eee;
+
 
 }
 
 
 
-.menu-item{
+
+.menu-item {
+
 
 text-align:center;
 
@@ -293,13 +361,13 @@ color:#717171;
 
 font-size:12px;
 
-cursor:pointer;
 
 }
 
 
 
-.menu-item span{
+
+.menu-item span {
 
 display:block;
 
@@ -307,23 +375,30 @@ font-size:24px;
 
 margin-bottom:3px;
 
+
 }
 
 
 
-.active{
+
+.active {
 
 color:#ff385c;
 
 }
 
 
+
 </style>
+
 
 </head>
 
 
+
+
 <body>
+
 
 
 <div class="header">
@@ -336,6 +411,7 @@ AutoFlip CRM
 </div>
 
 
+
 <div class="icons">
 
 🔔 ⚙️
@@ -343,7 +419,10 @@ AutoFlip CRM
 </div>
 
 
+
 </div>
+
+
 
 
 
@@ -355,14 +434,18 @@ AutoFlip CRM
 
 
 
+
 <div class="bottom">
+
 
 
 <div class="menu-item active"
 onclick="loadHome()">
 
 <span>
+
 🏠
+
 </span>
 
 Главная
@@ -371,11 +454,14 @@ onclick="loadHome()">
 
 
 
+
 <div class="menu-item"
 onclick="showCars()">
 
 <span>
+
 🚗
+
 </span>
 
 Авто
@@ -384,11 +470,15 @@ onclick="showCars()">
 
 
 
+
+
 <div class="menu-item"
 onclick="openNewDeal()">
 
 <span>
+
 ➕
+
 </span>
 
 Сделка
@@ -397,10 +487,14 @@ onclick="openNewDeal()">
 
 
 
+
+
 <div class="menu-item">
 
 <span>
+
 👥
+
 </span>
 
 Клиенты
@@ -409,11 +503,15 @@ onclick="openNewDeal()">
 
 
 
+
+
 <div class="menu-item"
 onclick="showFinance()">
 
 <span>
+
 📊
+
 </span>
 
 Финансы
@@ -428,27 +526,76 @@ onclick="showFinance()">
 
 
 
+<!-- База -->
+
 <script src="js/database.js"></script>
+
+
+
+<!-- Аналитика -->
 
 <script src="js/analytics.js"></script>
 
+
+
+<!-- Авто -->
+
 <script src="js/cars.js"></script>
+
+
+
+<!-- Сделки -->
 
 <script src="js/deals.js"></script>
 
+
+
+<!-- Карточка -->
+
 <script src="js/car-card.js"></script>
+
+
+
+<!-- Расходы -->
 
 <script src="js/expenses.js"></script>
 
+
+
+<!-- Статусы -->
+
 <script src="js/status.js"></script>
+
+
+
+<!-- Продажа -->
 
 <script src="js/sales.js"></script>
 
+
+
+<!-- Инвестор -->
+
 <script src="js/investors.js"></script>
+
+
+
+<!-- Финансы -->
 
 <script src="js/finance.js"></script>
 
+
+
+<!-- Настройки -->
+
+<script src="js/settings.js"></script>
+
+
+
+<!-- Главный -->
+
 <script src="js/app.js"></script>
+
 
 
 <script>
@@ -456,6 +603,7 @@ onclick="showFinance()">
 loadHome();
 
 </script>
+
 
 
 </body>
