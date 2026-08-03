@@ -1,15 +1,41 @@
 // AutoFlip CRM 2.0
-// Модуль автомобилей
+// Автомобили + фильтры
 
 
-function showCars(){
+let currentCarFilter = "Все";
+
+
+
+function showCars(filter = "Все"){
+
+
+currentCarFilter = filter;
+
 
 
 const cars = getCars();
 
 
 
+let filteredCars = cars;
+
+
+
+if(filter !== "Все"){
+
+
+filteredCars = cars.filter(car => 
+car.status === filter
+);
+
+
+}
+
+
+
+
 let html = `
+
 
 
 <div class="card">
@@ -18,6 +44,7 @@ let html = `
 <h2>
 🚗 Автомобили
 </h2>
+
 
 
 <div class="label">
@@ -31,6 +58,72 @@ let html = `
 
 
 
+
+
+<div class="card">
+
+
+<div class="filter-row">
+
+
+
+<button onclick="showCars('Все')">
+
+Все (${cars.length})
+
+</button>
+
+
+
+<button onclick="showCars('Куплено')">
+
+💰 Куплено
+
+</button>
+
+
+
+<button onclick="showCars('Подготовка')">
+
+🔧 Подготовка
+
+</button>
+
+
+
+<button onclick="showCars('В продаже')">
+
+🟢 В продаже
+
+</button>
+
+
+
+<button onclick="showCars('Резерв')">
+
+🟡 Резерв
+
+</button>
+
+
+
+<button onclick="showCars('Продано')">
+
+✅ Продано
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
 <div class="button" onclick="openNewDeal()">
 
 ➕ Добавить автомобиль
@@ -38,12 +131,14 @@ let html = `
 </div>
 
 
+
 `;
 
 
 
 
-if(cars.length === 0){
+
+if(filteredCars.length === 0){
 
 
 html += `
@@ -59,12 +154,17 @@ html += `
 
 
 <h3>
-Автомобилей пока нет
+
+Нет автомобилей
+
 </h3>
 
 
+
 <p>
-Добавьте первую сделку
+
+В этом статусе машин нет
+
 </p>
 
 
@@ -77,13 +177,14 @@ html += `
 `;
 
 
+
 }
 
 
 
 
 
-cars.forEach(car => {
+filteredCars.forEach(car => {
 
 
 
@@ -91,13 +192,15 @@ html += `
 
 
 
-<div class="car-card" onclick="openCarCard(${car.id})">
+<div class="car-card"
+
+onclick="openCarCard(${car.id})">
 
 
 
 <h3>
 
-${car.brand} ${car.model}
+${car.brand || ""} ${car.model || ""}
 
 </h3>
 
@@ -123,6 +226,7 @@ ${car.status}
 ${car.year || "-"} год
 
 </div>
+
 
 
 
@@ -162,31 +266,6 @@ ${Number(car.expenses || 0).toLocaleString()} ₽
 
 
 
-<br>
-
-
-
-<div class="profit">
-
-
-${
-Number(car.profit || 0) > 0
-
-?
-
-"+" + Number(car.profit).toLocaleString() + " ₽"
-
-:
-
-"В процессе"
-
-}
-
-
-</div>
-
-
-
 </div>
 
 
@@ -200,94 +279,9 @@ Number(car.profit || 0) > 0
 
 
 
+
 document.getElementById("app").innerHTML = html;
 
-
-}
-
-
-
-
-
-function getStatusClass(status){
-
-
-if(status === "В продаже"){
-
-return "sale";
-
-}
-
-
-if(status === "Подготовка"){
-
-return "prepare";
-
-}
-
-
-if(status === "Продано"){
-
-return "sale";
-
-}
-
-
-if(status === "Резерв"){
-
-return "prepare";
-
-}
-
-
-return "buy";
-
-
-}
-
-
-
-
-
-function getStatusIcon(status){
-
-
-if(status === "Куплено"){
-
-return "💰";
-
-}
-
-
-if(status === "Подготовка"){
-
-return "🔧";
-
-}
-
-
-if(status === "В продаже"){
-
-return "🟢";
-
-}
-
-
-if(status === "Резерв"){
-
-return "🟡";
-
-}
-
-
-if(status === "Продано"){
-
-return "✅";
-
-}
-
-
-return "🚗";
 
 
 }
