@@ -8,10 +8,12 @@ function showCars(){
 const cars = getCars();
 
 
+
 let html = `
 
 
 <div class="card">
+
 
 <h2>
 🚗 Автомобили
@@ -40,6 +42,7 @@ let html = `
 
 
 
+
 if(cars.length === 0){
 
 
@@ -50,6 +53,7 @@ html += `
 
 
 <center>
+
 
 🚗
 
@@ -72,7 +76,10 @@ html += `
 
 `;
 
+
 }
+
+
 
 
 
@@ -81,6 +88,7 @@ cars.forEach(car => {
 
 
 html += `
+
 
 
 <div class="car-card" onclick="openCarCard(${car.id})">
@@ -95,9 +103,11 @@ ${car.brand} ${car.model}
 
 
 
+
 <span class="status ${getStatusClass(car.status)}">
 
 ${getStatusIcon(car.status)}
+
 ${car.status}
 
 </span>
@@ -111,24 +121,6 @@ ${car.status}
 <div>
 
 ${car.year || "-"} год
-
-</div>
-
-
-
-<br>
-
-
-
-<div>
-
-Пробег:
-
-<b>
-
-${car.mileage || 0} км
-
-</b>
 
 </div>
 
@@ -207,6 +199,7 @@ Number(car.profit || 0) > 0
 
 
 
+
 document.getElementById("app").innerHTML = html;
 
 
@@ -216,35 +209,36 @@ document.getElementById("app").innerHTML = html;
 
 
 
-// Цвет статуса
-
 function getStatusClass(status){
 
 
-switch(status){
-
-
-case "В продаже":
+if(status === "В продаже"){
 
 return "sale";
 
+}
 
-case "Подготовка":
+
+if(status === "Подготовка"){
 
 return "prepare";
 
+}
 
-case "Продано":
+
+if(status === "Продано"){
 
 return "sale";
 
+}
 
-case "Резерв":
+
+if(status === "Резерв"){
 
 return "prepare";
 
+}
 
-default:
 
 return "buy";
 
@@ -253,58 +247,47 @@ return "buy";
 
 
 
-}
 
-
-
-
-
-// Иконки статусов
 
 function getStatusIcon(status){
 
 
-switch(status){
-
-
-case "Куплено":
+if(status === "Куплено"){
 
 return "💰";
 
+}
 
-case "Подготовка":
+
+if(status === "Подготовка"){
 
 return "🔧";
 
+}
 
-case "В продаже":
+
+if(status === "В продаже"){
 
 return "🟢";
 
+}
 
-case "Резерв":
+
+if(status === "Резерв"){
 
 return "🟡";
 
+}
 
-case "Продано":
+
+if(status === "Продано"){
 
 return "✅";
 
+}
 
-default:
 
 return "🚗";
-
-
-}
-
-
-}
-
-
-
-document.getElementById("app").innerHTML = html;
 
 
 }
