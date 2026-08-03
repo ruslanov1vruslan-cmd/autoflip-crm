@@ -30,16 +30,40 @@ function normalizeExpenseCategories(categories) {
     return unique.length > 0 ? unique : getDefaultExpenseCategories();
 }
 
-function getSettings() {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+function normalizeInvestors(investors) {
+    const list = Array.isArray(investors) ? investors : [];
+    const cleaned = list
+        .map(item => ({
+            name: String(item?.name || "").trim(),
+            percent: Number(item?.percent || 30)
+        }))
+        .filter(item => item.name);
 
-    const defaults = {
+    const unique = [];
+    cleaned.forEach(item => {
+        if (!unique.some(existing => existing.name.toLowerCase() === item.name.toLowerCase())) {
+            unique.push(item);
+        }
+    });
+
+    return unique;
+}
+
+function getDefaultSettings() {
+    return {
         companyName: "AutoFlip CRM",
         ownerName: "",
         currency: "₽",
         investorDefaultPercent: 30,
-        expenseCategories: getDefaultExpenseCategories()
+        expenseCategories: getDefaultExpenseCategories(),
+        investors: []
     };
+}
+
+function getSettings() {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+
+    const defaults = getDefaultSettings();
 
     if (!raw) {
         return defaults;
@@ -51,7 +75,8 @@ function getSettings() {
         return {
             ...defaults,
             ...parsed,
-            expenseCategories: normalizeExpenseCategories(parsed.expenseCategories)
+            expenseCategories: normalizeExpenseCategories(parsed.expenseCategories),
+            investors: normalizeInvestors(parsed.investors)
         };
     } catch (error) {
         console.error("Ошибка чтения настроек:", error);
@@ -60,10 +85,13 @@ function getSettings() {
 }
 
 function saveSettings(settings) {
+    const current = getSettings();
+
     const normalized = {
-        ...getSettings(),
+        ...current,
         ...settings,
-        expenseCategories: normalizeExpenseCategories(settings.expenseCategories)
+        expenseCategories: normalizeExpenseCategories(settings.expenseCategories ?? current.expenseCategories),
+        investors: normalizeInvestors(settings.investors ?? current.investors)
     };
 
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(normalized));
@@ -73,9 +101,14 @@ function getExpenseCategories() {
     return normalizeExpenseCategories(getSettings().expenseCategories);
 }
 
+function getInvestorList() {
+    return normalizeInvestors(getSettings().investors);
+}
+
 function showSettings() {
     const settings = getSettings();
     const categories = getExpenseCategories();
+    const investors = getInvestorList();
 
     document.getElementById("app").innerHTML = `
         <div class="card">
@@ -122,6 +155,27 @@ function showSettings() {
         </div>
 
         <div class="card">
+            <h3>👤 Инвесторы</h3>
+            <div class="label">Быстрый выбор в карточке инвестора</div>
+
+            <div id="investorsList">
+                ${renderInvestors(investors)}
+            </div>
+
+            <div class="label" style="margin-top:16px;">Добавить нового инвестора</div>
+            <input id="newInvestorName" class="input" type="text" placeholder="Иван">
+            <input id="newInvestorPercent" class="input" type="number" min="0" max="100" placeholder="30">
+
+            <div class="button" onclick="addInvestor()">
+                ➕ Добавить инвестора
+            </div>
+
+            <div class="button" onclick="saveInvestors()">
+                💾 Сохранить список инвесторов
+            </div>
+        </div>
+
+        <div class="card">
             <h3>📦 Резервная копия</h3>
 
             <div class="button" onclick="exportBackup()">
@@ -164,6 +218,26 @@ function renderExpenseCategories(categories) {
             <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; margin-bottom:10px;">
                 <div>${escapeSettingsHtml(category)}</div>
                 <button type="button" onclick="removeExpenseCategory(${index})" style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 12px; cursor:pointer;">
+                    Удалить
+                </button>
+            </div>
+        `)
+        .join("");
+}
+
+function renderInvestors(investors) {
+    if (!investors.length) {
+        return `<p>Список инвесторов пуст</p>`;
+    }
+
+    return investors
+        .map((investor, index) => `
+            <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; margin-bottom:10px;">
+                <div>
+                    <div><b>${escapeSettingsHtml(investor.name)}</b></div>
+                    <div class="label">${Number(investor.percent || 0)}%</div>
+                </div>
+                <button type="button" onclick="removeInvestor(${index})" style="border:none; background:#f3f4f6; border-radius:12px; padding:8px 12px; cursor:pointer;">
                     Удалить
                 </button>
             </div>
@@ -220,13 +294,68 @@ function saveExpenseCategories() {
     showSettings();
 }
 
+function addInvestor() {
+    const name = String(document.getElementById("newInvestorName").value || "").trim();
+    const percent = Number(document.getElementById("newInvestorPercent").value || getSettings().investorDefaultPercent || 30);
+
+    if (!name) {
+        alert("Введите имя инвестора");
+        return;
+    }
+
+    const settings = getSettings();
+    const investors = getInvestorList();
+
+    if (investors.some(item => item.name.toLowerCase() === name.toLowerCase())) {
+        alert("Такой инвестор уже есть");
+        return;
+    }
+
+    investors.push({
+        name,
+        percent
+    });
+
+    settings.investors = investors;
+    saveSettings(settings);
+
+    document.getElementById("newInvestorName").value = "";
+    document.getElementById("newInvestorPercent").value = "";
+
+    showSettings();
+}
+
+function removeInvestor(index) {
+    const settings = getSettings();
+    const investors = getInvestorList();
+
+    if (investors.length === 0) {
+        return;
+    }
+
+    investors.splice(index, 1);
+    settings.investors = investors;
+    saveSettings(settings);
+
+    showSettings();
+}
+
+function saveInvestors() {
+    const settings = getSettings();
+    settings.investors = getInvestorList();
+    saveSettings(settings);
+    alert("Список инвесторов сохранён");
+    showSettings();
+}
+
 function saveAppSettings() {
     const settings = {
         companyName: document.getElementById("settingCompanyName").value.trim() || "AutoFlip CRM",
         ownerName: document.getElementById("settingOwnerName").value.trim() || "",
         currency: document.getElementById("settingCurrency").value.trim() || "₽",
         investorDefaultPercent: Number(document.getElementById("settingInvestorPercent").value || 30),
-        expenseCategories: getExpenseCategories()
+        expenseCategories: getExpenseCategories(),
+        investors: getInvestorList()
     };
 
     saveSettings(settings);
