@@ -1,6 +1,5 @@
 // AutoFlip CRM 2.0
-// Главный контроллер
-
+// Главная страница и расчёты
 
 
 function loadHome(){
@@ -12,26 +11,57 @@ const cars = getCars();
 
 let moneyInCars = 0;
 
-let profit = 0;
+let totalProfit = 0;
 
 
 
-cars.forEach(car=>{
+cars.forEach(car => {
 
 
-moneyInCars +=
-Number(car.buyPrice || 0)
-+
+
+const buy =
+Number(car.buyPrice || 0);
+
+
+
+const expenses =
 Number(car.expenses || 0);
 
 
 
-profit +=
-Number(car.profit || 0);
+const sale =
+Number(car.salePrice || 0);
+
+
+
+
+
+// Деньги в автомобилях считаем только по активным авто
+
+if(car.status !== "Продано"){
+
+moneyInCars += buy + expenses;
+
+}
+
+
+
+
+
+// Прибыль считаем после продажи
+
+if(car.status === "Продано" && sale > 0){
+
+
+totalProfit += sale - buy - expenses;
+
+
+}
 
 
 
 });
+
 
 
 
@@ -50,6 +80,7 @@ document.getElementById("app").innerHTML = `
 </div>
 
 
+
 <div class="big-number">
 
 ${moneyInCars.toLocaleString()} ₽
@@ -57,7 +88,9 @@ ${moneyInCars.toLocaleString()} ₽
 </div>
 
 
+
 </div>
+
 
 
 
@@ -90,6 +123,7 @@ ${cars.length}
 
 
 
+
 <div class="card">
 
 
@@ -100,9 +134,10 @@ ${cars.length}
 </div>
 
 
+
 <div class="big-number">
 
-${profit.toLocaleString()} ₽
+${totalProfit.toLocaleString()} ₽
 
 </div>
 
@@ -112,13 +147,83 @@ ${profit.toLocaleString()} ₽
 
 
 </div>
+
+
+
+
+
+
+
+<div class="card">
+
+
+<div class="label">
+
+Последние автомобили
+
+</div>
+
+
+
+${
+cars.length === 0
+
+?
+
+"<p>Нет автомобилей</p>"
+
+:
+
+cars.slice(-3).reverse().map(car => `
+
+
+<div class="car-card"
+onclick="openCarCard(${car.id})">
+
+
+<b>
+
+${car.brand || ""} ${car.model || ""}
+
+</b>
+
+
+<br><br>
+
+
+<span class="status ${getStatusClass(car.status)}">
+
+${getStatusIcon(car.status)}
+
+${car.status}
+
+</span>
+
+
+<br><br>
+
+
+Покупка:
+
+${Number(car.buyPrice || 0).toLocaleString()} ₽
+
+
+</div>
+
+
+`).join("")
+
+}
+
+
+</div>
+
 
 
 
 
 
 <div class="button"
-
 onclick="openNewDeal()">
 
 ➕ Новая сделка
@@ -128,5 +233,7 @@ onclick="openNewDeal()">
 
 
 `;
+
+
 
 }
