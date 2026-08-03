@@ -98,14 +98,16 @@ onclick="saveExpense(${carId})">
 
 
 
+
 function saveExpense(carId){
 
 
 const cars = getCars();
 
 
+
 const car = cars.find(
-item => item.id === carId
+item => item.id == carId
 );
 
 
@@ -120,19 +122,34 @@ return;
 
 
 
+const amount = Number(
+document.getElementById("expenseAmount").value
+);
+
+
+
+if(!amount || amount <= 0){
+
+alert("Введите сумму расхода");
+
+return;
+
+}
+
+
+
+
 const expense = {
 
 
 id:Date.now(),
 
+
 category:
 document.getElementById("expenseCategory").value,
 
 
-amount:
-Number(
-document.getElementById("expenseAmount").value
-),
+amount:amount,
 
 
 comment:
@@ -144,6 +161,7 @@ new Date().toLocaleDateString()
 
 
 };
+
 
 
 
@@ -161,9 +179,35 @@ car.expensesList.push(expense);
 
 car.expenses =
 car.expensesList.reduce(
-(sum,item)=>sum+item.amount,
+
+(sum,item)=>sum + item.amount,
+
 0
+
 );
+
+
+
+
+if(!car.history){
+
+car.history=[];
+
+}
+
+
+
+car.history.push({
+
+date:
+new Date().toLocaleDateString(),
+
+
+action:
+`Добавлен расход: ${expense.category} ${expense.amount.toLocaleString()} ₽`
+
+});
+
 
 
 
@@ -178,4 +222,5 @@ alert("Расход добавлен");
 openCarCard(carId);
 
 
+}
 }
