@@ -8,6 +8,7 @@ function showCars(filter = "Все"){
 const cars = getCars();
 
 
+
 let filteredCars = cars;
 
 
@@ -21,6 +22,7 @@ car.status === filter
 
 
 }
+
 
 
 
@@ -43,6 +45,7 @@ let html = `
 
 
 </div>
+
 
 
 
@@ -91,6 +94,7 @@ let html = `
 
 
 
+
 <div class="button" onclick="openNewDeal()">
 
 ➕ Добавить автомобиль
@@ -98,8 +102,46 @@ let html = `
 </div>
 
 
+
 `;
 
+
+
+
+
+if(filteredCars.length === 0){
+
+
+html += `
+
+
+<div class="card">
+
+
+<center>
+
+
+🚗
+
+
+<h3>
+
+Нет автомобилей
+
+</h3>
+
+
+</center>
+
+
+</div>
+
+
+`;
+
+
+
+}
 
 
 
@@ -111,9 +153,11 @@ filteredCars.forEach(car => {
 html += `
 
 
+
 <div class="car-card"
 
 onclick="openCarCard(${car.id})">
+
 
 
 <h3>
@@ -124,17 +168,36 @@ ${car.brand || ""} ${car.model || ""}
 
 
 
+
 <span class="status ${getStatusClass(car.status)}">
+
 
 ${getStatusIcon(car.status)}
 
 ${car.status || ""}
 
+
 </span>
 
 
 
+
 <br><br>
+
+
+
+<div>
+
+Год:
+
+${car.year || "-"}
+
+</div>
+
+
+
+
+<br>
 
 
 
@@ -155,6 +218,7 @@ ${Number(car.buyPrice || 0).toLocaleString()} ₽
 </div>
 
 
+
 `;
 
 
@@ -166,94 +230,6 @@ ${Number(car.buyPrice || 0).toLocaleString()} ₽
 
 
 document.getElementById("app").innerHTML = html;
-
-
-}
-
-
-
-
-
-// Общие функции статусов
-
-
-function getStatusClass(status){
-
-
-switch(status){
-
-
-case "В продаже":
-
-return "sale";
-
-
-case "Подготовка":
-
-return "prepare";
-
-
-case "Продано":
-
-return "sale";
-
-
-case "Резерв":
-
-return "prepare";
-
-
-default:
-
-return "buy";
-
-
-}
-
-
-}
-
-
-
-
-
-function getStatusIcon(status){
-
-
-switch(status){
-
-
-case "Куплено":
-
-return "💰";
-
-
-case "Подготовка":
-
-return "🔧";
-
-
-case "В продаже":
-
-return "🟢";
-
-
-case "Резерв":
-
-return "🟡";
-
-
-case "Продано":
-
-return "✅";
-
-
-default:
-
-return "🚗";
-
-
-}
 
 
 }
