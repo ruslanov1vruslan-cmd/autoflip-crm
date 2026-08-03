@@ -1,161 +1,89 @@
 // AutoFlip CRM 2.0
-// Статусы автомобиля
+// Общие статусы автомобилей
 
 
-function changeStatusForm(carId){
+function getStatusClass(status){
 
 
-document.getElementById("app").innerHTML = `
+switch(status){
 
 
-<div class="card">
+case "В продаже":
+
+return "sale";
 
 
-<h2>
-🔄 Новый статус
-</h2>
+case "Подготовка":
+
+return "prepare";
 
 
+case "Продано":
 
-<select id="newStatus" class="input">
-
-
-<option>
-Куплено
-</option>
+return "sale";
 
 
-<option>
-Подготовка
-</option>
+case "Резерв":
+
+return "prepare";
 
 
-<option>
-В продаже
-</option>
+case "Куплено":
+
+return "buy";
 
 
-<option>
-Резерв
-</option>
+default:
+
+return "buy";
 
 
-<option>
-Продано
-</option>
+}
 
-
-</select>
-
-
-
-
-<div 
-class="button"
-onclick="saveStatus(${carId})">
-
-Изменить статус
-
-</div>
-
-
-
-</div>
-
-
-`;
 
 }
 
 
 
 
-function saveStatus(carId){
+
+function getStatusIcon(status){
 
 
-const cars = getCars();
+switch(status){
 
 
+case "Куплено":
 
-const car = cars.find(
-item => item.id == carId
-);
-
+return "💰";
 
 
-if(!car){
+case "Подготовка":
 
-alert("Автомобиль не найден");
+return "🔧";
 
-return;
+
+case "В продаже":
+
+return "🟢";
+
+
+case "Резерв":
+
+return "🟡";
+
+
+case "Продано":
+
+return "✅";
+
+
+default:
+
+return "🚗";
+
 
 }
-
-
-
-const oldStatus = car.status;
-
-
-
-const newStatus =
-document.getElementById("newStatus").value;
-
-
-
-if(!newStatus){
-
-alert("Выберите статус");
-
-return;
-
-}
-
-
-
-if(oldStatus === newStatus){
-
-alert("Статус уже установлен");
-
-return;
-
-}
-
-
-
-car.status = newStatus;
-
-
-
-if(!car.history){
-
-car.history = [];
-
-}
-
-
-
-car.history.push({
-
-date:
-new Date().toLocaleDateString(),
-
-
-action:
-`Статус изменён: ${oldStatus} → ${newStatus}`
-
-});
-
-
-
-saveCars(cars);
-
-
-
-alert("Статус обновлён");
-
-
-
-openCarCard(carId);
 
 
 }
