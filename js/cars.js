@@ -91,7 +91,6 @@ let html = `
 
 
 
-
 <div class="button" onclick="openNewDeal()">
 
 ➕ Добавить автомобиль
@@ -105,45 +104,15 @@ let html = `
 
 
 
-if(filteredCars.length === 0){
-
-
-html += `
-
-
-<div class="card">
-
-<center>
-
-🚗
-
-<h3>
-Нет автомобилей
-</h3>
-
-
-</center>
-
-</div>
-
-
-`;
-
-
-
-}
-
-
-
-
-
 filteredCars.forEach(car => {
+
 
 
 html += `
 
 
 <div class="car-card"
+
 onclick="openCarCard(${car.id})">
 
 
@@ -155,25 +124,18 @@ ${car.brand || ""} ${car.model || ""}
 
 
 
-<span class="status ${statusClass(car.status)}">
+<span class="status ${getStatusClass(car.status)}">
 
-${statusIcon(car.status)}
+${getStatusIcon(car.status)}
+
 ${car.status || ""}
 
 </span>
 
 
+
 <br><br>
 
-
-<div>
-
-${car.year || "-"} год
-
-</div>
-
-
-<br>
 
 
 <div>
@@ -181,7 +143,9 @@ ${car.year || "-"} год
 Покупка:
 
 <b>
+
 ${Number(car.buyPrice || 0).toLocaleString()} ₽
+
 </b>
 
 </div>
@@ -194,7 +158,9 @@ ${Number(car.buyPrice || 0).toLocaleString()} ₽
 `;
 
 
+
 });
+
 
 
 
@@ -202,27 +168,42 @@ ${Number(car.buyPrice || 0).toLocaleString()} ₽
 document.getElementById("app").innerHTML = html;
 
 
-
 }
 
 
 
 
 
-function statusClass(status){
+// Общие функции статусов
 
 
-if(status === "В продаже") return "sale";
+function getStatusClass(status){
 
 
-if(status === "Подготовка") return "prepare";
+switch(status){
 
 
-if(status === "Продано") return "sale";
+case "В продаже":
+
+return "sale";
 
 
-if(status === "Резерв") return "prepare";
+case "Подготовка":
 
+return "prepare";
+
+
+case "Продано":
+
+return "sale";
+
+
+case "Резерв":
+
+return "prepare";
+
+
+default:
 
 return "buy";
 
@@ -230,28 +211,49 @@ return "buy";
 }
 
 
+}
 
 
 
-function statusIcon(status){
 
 
-if(status === "Куплено") return "💰";
+function getStatusIcon(status){
 
 
-if(status === "Подготовка") return "🔧";
+switch(status){
 
 
-if(status === "В продаже") return "🟢";
+case "Куплено":
+
+return "💰";
 
 
-if(status === "Резерв") return "🟡";
+case "Подготовка":
+
+return "🔧";
 
 
-if(status === "Продано") return "✅";
+case "В продаже":
 
+return "🟢";
+
+
+case "Резерв":
+
+return "🟡";
+
+
+case "Продано":
+
+return "✅";
+
+
+default:
 
 return "🚗";
+
+
+}
 
 
 }
