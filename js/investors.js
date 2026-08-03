@@ -1,5 +1,5 @@
 // AutoFlip CRM 2.0
-// Инвесторы и выплаты
+// Инвесторы
 
 
 function showInvestorPayment(carId){
@@ -9,7 +9,7 @@ const cars = getCars();
 
 
 const car = cars.find(
-item => item.id === carId
+item => item.id == carId
 );
 
 
@@ -24,14 +24,19 @@ return;
 
 
 
+const profit = Number(car.profit || 0);
+
+
+
 document.getElementById("app").innerHTML = `
+
 
 
 <div class="card">
 
 
 <h2>
-👤 Инвестор
+👤 Выплата инвестору
 </h2>
 
 
@@ -41,61 +46,78 @@ document.getElementById("app").innerHTML = `
 Автомобиль:
 
 <b>
+
 ${car.brand} ${car.model}
+
 </b>
 
 </p>
 
 
 
+
 <p>
 
-Прибыль сделки:
+Прибыль:
 
-<b>
-${car.profit?.toLocaleString() || 0} ₽
+<b class="profit">
+
+${profit.toLocaleString()} ₽
+
 </b>
 
 </p>
 
 
 
-<p>
 
-К выплате инвестору:
-
-<b>
-${car.investorProfit?.toLocaleString() || 0} ₽
-</b>
-
-</p>
+<select id="investorStatus" class="input">
 
 
+<option value="Ожидает">
 
-<p>
+Ожидает
 
-Статус:
+</option>
 
-<span class="status prepare">
 
-⏳ Ожидает выплаты
 
-</span>
+<option value="Выплачен">
 
-</p>
+Выплачен
+
+</option>
+
+
+
+</select>
+
 
 
 
 <div class="button"
-onclick="confirmInvestorPayment(${car.id})">
 
-💰 Выплатить инвестору
+onclick="saveInvestorPayment(${car.id})">
+
+💰 Сохранить выплату
+
+</div>
+
+
+
+
+<div class="button"
+
+onclick="openCarCard(${car.id})">
+
+← Назад
 
 </div>
 
 
 
 </div>
+
 
 
 `;
@@ -108,29 +130,49 @@ onclick="confirmInvestorPayment(${car.id})">
 
 
 
-function confirmInvestorPayment(carId){
+function saveInvestorPayment(carId){
 
 
 const cars = getCars();
 
 
+
 const car = cars.find(
-item => item.id === carId
+item => item.id == carId
 );
 
 
 
-car.investorPaid = true;
+if(!car){
+
+alert("Автомобиль не найден");
+
+return;
+
+}
 
 
-car.investorPaymentDate =
-new Date().toLocaleDateString();
+
+const status =
+document.getElementById("investorStatus").value;
+
+
+
+if(!car.investor){
+
+car.investor = {};
+
+}
+
+
+
+car.investor.paymentStatus = status;
 
 
 
 if(!car.history){
 
-car.history=[];
+car.history = [];
 
 }
 
@@ -143,9 +185,11 @@ new Date().toLocaleDateString(),
 
 
 action:
-"Инвестору выплачена прибыль"
+`Выплата инвестору: ${status}`
 
 });
+
+
 
 
 
@@ -153,13 +197,12 @@ saveCars(cars);
 
 
 
-alert(
-"Выплата инвестору отмечена"
-);
+alert("Статус выплаты сохранён");
 
 
 
 openCarCard(carId);
+
 
 
 }
