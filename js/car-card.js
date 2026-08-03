@@ -29,8 +29,8 @@ function openCarCard(id) {
         <div class="card">
             <h2>${car.brand || ""} ${car.model || ""}</h2>
 
-            <span class="status ${getStatusClass(car.status)}">
-                ${getStatusIcon(car.status)}
+            <span class="status ${cardGetStatusClass(car.status)}">
+                ${cardGetStatusIcon(car.status)}
                 ${car.status || "Без статуса"}
             </span>
 
@@ -129,7 +129,7 @@ function openEditCarForm(id) {
             <input id="editNumber" class="input" value="${escapeHtml(car.number || "")}">
 
             <div class="label">Цена покупки</div>
-            <input id="editBuyPrice" class="input" value="${escapeHtml(car.buyPrice || "")}">
+            <input id="editBuyPrice" class="input" type="number" min="0" value="${Number(car.buyPrice || 0)}">
 
             <div class="button" onclick="saveEditCar(${car.id})">
                 Сохранить изменения
@@ -207,6 +207,40 @@ function renderCarHistory(car) {
             </div>
         `)
         .join("");
+}
+
+function cardGetStatusClass(status) {
+    switch (status) {
+        case "В продаже":
+            return "sale";
+        case "Подготовка":
+            return "prepare";
+        case "Продано":
+            return "sale";
+        case "Резерв":
+            return "prepare";
+        case "Куплено":
+            return "buy";
+        default:
+            return "buy";
+    }
+}
+
+function cardGetStatusIcon(status) {
+    switch (status) {
+        case "Куплено":
+            return "💰";
+        case "Подготовка":
+            return "🔧";
+        case "В продаже":
+            return "🟢";
+        case "Резерв":
+            return "🟡";
+        case "Продано":
+            return "✅";
+        default:
+            return "🚗";
+    }
 }
 
 function escapeHtml(value) {
