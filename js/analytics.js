@@ -1,135 +1,129 @@
 // AutoFlip CRM 2.0
-// Аналитика
+// Единый финансовый расчёт
 
 
-function showAnalytics(){
+function getAnalytics(){
 
 
 const cars = getCars();
 
 
-let sold = 0;
+
+let moneyInCars = 0;
+
+let totalBuy = 0;
+
+let totalExpenses = 0;
+
+let totalSales = 0;
 
 let totalProfit = 0;
 
+let activeCars = 0;
 
-cars.forEach(car=>{
+let soldCars = 0;
+
+
+
+
+cars.forEach(car => {
+
+
+
+const buy =
+Number(car.buyPrice || 0);
+
+
+
+const expenses =
+Number(car.expenses || 0);
+
+
+
+const sale =
+Number(car.salePrice || 0);
+
+
+
+
+
+totalBuy += buy;
+
+
+totalExpenses += expenses;
+
+
 
 
 if(car.status === "Продано"){
 
-sold++;
 
-totalProfit += Number(car.profit || 0);
+soldCars++;
+
+
+if(sale > 0){
+
+
+totalSales += sale;
+
+
+totalProfit += sale - buy - expenses;
+
 
 }
+
+
+}
+else{
+
+
+activeCars++;
+
+
+moneyInCars += buy + expenses;
+
+
+}
+
 
 
 });
 
 
 
-let average = 0;
 
 
-if(sold > 0){
-
-average =
-totalProfit / sold;
-
-}
+return {
 
 
-
-document.getElementById("app").innerHTML = `
-
-
-<div class="card main-card">
+carsCount:
+cars.length,
 
 
-<div class="label">
-
-📈 Общая прибыль
-
-</div>
+activeCars,
 
 
-<div class="big-number">
-
-${totalProfit.toLocaleString()} ₽
-
-</div>
+soldCars,
 
 
-</div>
+moneyInCars,
+
+
+totalBuy,
+
+
+totalExpenses,
+
+
+totalSales,
+
+
+totalProfit
 
 
 
-
-<div class="stats">
-
-
-<div class="card">
+};
 
 
-<div class="label">
-
-Продано авто
-
-</div>
-
-
-<div class="stat-number">
-
-${sold}
-
-</div>
-
-
-</div>
-
-
-
-
-<div class="card">
-
-
-<div class="label">
-
-Средняя прибыль
-
-</div>
-
-
-<div class="stat-number">
-
-${Math.round(average).toLocaleString()} ₽
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-<div class="card">
-
-<h3>
-🏆 Лучшие сделки
-</h3>
-
-
-<p>
-Появятся после продаж
-</p>
-
-
-</div>
-
-
-`;
 
 }
