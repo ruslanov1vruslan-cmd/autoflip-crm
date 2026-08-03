@@ -110,7 +110,13 @@ ${car.buyPrice} ₽
 
 <div class="profit">
 
----
+${
+car.profit > 0
+?
+"+" + Number(car.profit).toLocaleString() + " ₽"
+:
+"В процессе"
+}
 
 </div>
 
