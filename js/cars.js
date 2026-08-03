@@ -1,41 +1,13 @@
 // AutoFlip CRM 2.0
-// Автомобили + фильтры + поиск
+// Автомобили + фильтры
 
-let currentCarFilter = "Все";
-let currentCarSearch = "";
-
-function showCars(filter = currentCarFilter, search = currentCarSearch) {
-    currentCarFilter = filter;
-    currentCarSearch = search;
-
+function showCars(filter = "Все") {
     const cars = getCars();
 
     let filteredCars = cars;
 
     if (filter !== "Все") {
-        filteredCars = filteredCars.filter(car => car.status === filter);
-    }
-
-    const q = (search || "").trim().toLowerCase();
-
-    if (q) {
-        filteredCars = filteredCars.filter(car => {
-            const haystack = [
-                car.brand,
-                car.model,
-                car.year,
-                car.mileage,
-                car.vin,
-                car.number,
-                car.buyPrice,
-                car.status
-            ]
-                .filter(Boolean)
-                .join(" ")
-                .toLowerCase();
-
-            return haystack.includes(q);
-        });
+        filteredCars = cars.filter(car => car.status === filter);
     }
 
     let html = `
@@ -45,21 +17,13 @@ function showCars(filter = currentCarFilter, search = currentCarSearch) {
         </div>
 
         <div class="card">
-            <input
-                class="input"
-                id="carSearchInput"
-                value="${escapeHtml(currentCarSearch)}"
-                placeholder="Поиск: марка, модель, VIN, номер..."
-                oninput="showCars(currentCarFilter, this.value)"
-            >
-
             <div class="filter-row">
-                <button onclick="showCars('Все', document.getElementById('carSearchInput').value)">Все (${cars.length})</button>
-                <button onclick="showCars('Куплено', document.getElementById('carSearchInput').value)">💰 Куплено</button>
-                <button onclick="showCars('Подготовка', document.getElementById('carSearchInput').value)">🔧 Подготовка</button>
-                <button onclick="showCars('В продаже', document.getElementById('carSearchInput').value)">🟢 В продаже</button>
-                <button onclick="showCars('Резерв', document.getElementById('carSearchInput').value)">🟡 Резерв</button>
-                <button onclick="showCars('Продано', document.getElementById('carSearchInput').value)">✅ Продано</button>
+                <button onclick="showCars('Все')">Все (${cars.length})</button>
+                <button onclick="showCars('Куплено')">💰 Куплено</button>
+                <button onclick="showCars('Подготовка')">🔧 Подготовка</button>
+                <button onclick="showCars('В продаже')">🟢 В продаже</button>
+                <button onclick="showCars('Резерв')">🟡 Резерв</button>
+                <button onclick="showCars('Продано')">✅ Продано</button>
             </div>
         </div>
 
@@ -74,7 +38,7 @@ function showCars(filter = currentCarFilter, search = currentCarSearch) {
                 <center>
                     🚗
                     <h3>Автомобилей нет</h3>
-                    <p>В этом статусе или по такому запросу машин нет</p>
+                    <p>В этом статусе машин нет</p>
                 </center>
             </div>
         `;
@@ -160,13 +124,4 @@ function getStatusIcon(status) {
         default:
             return "🚗";
     }
-}
-
-function escapeHtml(value) {
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
 }
