@@ -6,6 +6,20 @@ function loadHome() {
     const cars = getCars();
     const recentCars = cars.slice().reverse().slice(0, 3);
 
+    const now = new Date();
+    const currentYear = String(now.getFullYear());
+    const currentMonth = String(now.getMonth() + 1);
+
+    const monthReport = typeof getFinanceReport === "function"
+        ? getFinanceReport(currentYear, currentMonth)
+        : null;
+
+    const monthName = typeof getMonthName === "function"
+        ? getMonthName(Number(currentMonth))
+        : `${currentMonth}.`;
+
+    const monthProfit = monthReport ? monthReport.ownerProfit : 0;
+
     document.getElementById("app").innerHTML = `
         <div class="card main-card">
             <div class="label">💰 Деньги в автомобилях</div>
@@ -22,6 +36,12 @@ function loadHome() {
                 <div class="label">📈 Прибыль</div>
                 <div class="big-number">${stats.totalProfit.toLocaleString("ru-RU")} ₽</div>
             </div>
+        </div>
+
+        <div class="card" onclick="showFinance('${currentYear}', '${currentMonth}')" style="cursor:pointer;">
+            <div class="label">📅 Прибыль за ${monthName} ${currentYear}</div>
+            <div class="big-number">${monthProfit.toLocaleString("ru-RU")} ₽</div>
+            <div class="label">Это прибыль владельца уже без доли инвестора</div>
         </div>
 
         <div class="card">
