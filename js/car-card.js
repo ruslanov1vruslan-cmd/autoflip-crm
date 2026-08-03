@@ -54,12 +54,12 @@ ${car.brand} ${car.model}
 
 
 
-<span class="status buy">
+<span class="status ${getStatusClass(car.status)}">
 
+${getStatusIcon(car.status)}
 ${car.status}
 
 </span>
-
 
 
 <br><br>
