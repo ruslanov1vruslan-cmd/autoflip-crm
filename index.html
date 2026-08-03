@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="icon" href="icon-192.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AutoFlip CRM</title>
 
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
 
 <style>
 * {
@@ -196,6 +196,7 @@ body {
     cursor: pointer;
     font-size: 18px;
     font-weight: 700;
+    user-select: none;
 }
 
 .back-btn:active {
@@ -206,7 +207,7 @@ body {
 
 <body>
 
-<div class="back-btn" onclick="loadHome()" title="Назад">←</div>
+<div class="back-btn" onclick="goBack()" title="Назад">←</div>
 
 <div class="header">
     <div class="logo">AutoFlip CRM</div>
@@ -242,6 +243,45 @@ body {
     </div>
 </div>
 
+<script>
+window.__screenHistory = [];
+window.__restoringScreen = false;
+
+(function () {
+    const app = document.getElementById("app");
+    const descriptor = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML");
+
+    Object.defineProperty(app, "innerHTML", {
+        configurable: true,
+        get() {
+            return descriptor.get.call(this);
+        },
+        set(value) {
+            if (!window.__restoringScreen) {
+                const current = descriptor.get.call(this);
+                if (current && current !== value) {
+                    window.__screenHistory.push(current);
+                }
+            }
+            descriptor.set.call(this, value);
+        }
+    });
+})();
+
+function goBack() {
+    const app = document.getElementById("app");
+
+    if (!window.__screenHistory || window.__screenHistory.length === 0) {
+        loadHome();
+        return;
+    }
+
+    window.__restoringScreen = true;
+    app.innerHTML = window.__screenHistory.pop();
+    window.__restoringScreen = false;
+}
+</script>
+
 <script src="js/database.js"></script>
 <script src="js/status.js"></script>
 <script src="js/analytics.js"></script>
@@ -249,7 +289,6 @@ body {
 <script src="js/deals.js"></script>
 <script src="js/car-card.js"></script>
 <script src="js/expenses.js"></script>
-<script src="js/status.js"></script>
 <script src="js/sales.js"></script>
 <script src="js/investors.js"></script>
 <script src="js/finance.js"></script>
