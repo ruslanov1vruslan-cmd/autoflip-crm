@@ -1,112 +1,139 @@
 // AutoFlip CRM 2.0
-// Карточка автомобиля
+// Автомобили + фильтры
 
+function showCars(filter = "Все") {
+    const cars = getCars();
 
-function openCarCard(id) {
-    const car = getCarById(id);
+    let filteredCars = cars;
 
-    if (!car) {
-        alert("Автомобиль не найден");
-        return;
+    if (filter !== "Все") {
+        filteredCars = cars.filter(car => car.status === filter);
     }
 
-    const buy = Number(car.buyPrice || 0);
-    const expenses = Number(car.expenses || 0);
-    const sale = Number(car.salePrice || 0);
+    let html = `
+        <div class="card">
+            <h2>🚗 Автомобили</h2>
+            <div class="label">Всего автомобилей: ${cars.length}</div>
+        </div>
 
-    let profit = Number(car.profit || 0);
-    if (!profit && sale > 0) {
-        profit = sale - buy - expenses;
-    }
+        <div class="card">
+            <div class="filter-row">
+                <button onclick="showCars('Все')">Все (${cars.length})</button>
+                <button onclick="showCars('Куплено')">💰 Куплено</button>
+                <button onclick="showCars('Подготовка')">🔧 Подготовка</button>
+                <button onclick="showCars('В продаже')">🟢 В продаже</button>
+                <button onclick="showCars('Резерв')">🟡 Резерв</button>
+                <button onclick="showCars('Продано')">✅ Продано</button>
+            </div>
+        </div>
 
-    const investorName = car.investor?.name || "—";
-    const investorPercent = Number(car.investor?.percent || 0);
-    const investorStatus = car.investor?.paymentStatus || "Ожидает";
-    const investorProfit = profit > 0 ? (profit * investorPercent / 100) : 0;
+        <div class="button" onclick="openNewDeal()">
+            ➕ Добавить автомобиль
+        </div>
+    `;
 
-    let historyHtml = "";
-    if (Array.isArray(car.history) && car.history.length > 0) {
-        historyHtml = car.history
-            .slice()
-            .reverse()
-            .map(item => `
-                <div class="card">
-                    <b>${item.date || ""}</b>
-                    <br><br>
-                    ${item.action || ""}
-                </div>
-            `)
-            .join("");
-    } else {
-        historyHtml = `
+    if (filteredCars.length === 0) {
+        html += `
             <div class="card">
-                <div class="label">История</div>
-                <p>Пока нет событий</p>
+                <center>
+                    🚗
+                    <h3>Автомобилей нет</h3>
+                    <p>В этом статусе машин нет</p>
+                </center>
             </div>
         `;
     }
 
-    document.getElementById("app").innerHTML = `
-        <div class="card">
-            <h2>${car.brand || ""} ${car.model || ""}</h2>
+    filteredCars.forEach(car => {
+        const profit = Number(car.profit || 0);
 
-            <span class="status ${getStatusClass(car.status)}">
-                ${getStatusIcon(car.status)}
-                ${car.status || "Без статуса"}
-            </span>
+        html += `
+            <div class="car-card" onclick="openCarCard(${car.id})">
+                <h3>${car.brand || ""} ${car.model || ""}</h3>
 
-            <br><br>
+                <span class="status ${getStatusClass(car.status)}">
+                    ${getStatusIcon(car.status)}
+                    ${car.status || "Без статуса"}
+                </span>
 
-            <div class="label">Основная информация</div>
-            <br>
+                <br><br>
 
-            <p>Год: <b>${car.year || "-"}</b></p>
-            <p>Пробег: <b>${car.mileage || 0} км</b></p>
-            <p>VIN: <b>${car.vin || "-"}</b></p>
-            <p>Госномер: <b>${car.number || "-"}</b></p>
-        </div>
+                <div>Год: ${car.year || "-"}</div>
 
-        <div class="card">
-            <h3>💰 Финансы</h3>
+                <br>
 
-            <p>Покупка: <b>${buy.toLocaleString()} ₽</b></p>
-            <p>Расходы: <b>${expenses.toLocaleString()} ₽</b></p>
-            <p>Себестоимость: <b>${(buy + expenses).toLocaleString()} ₽</b></p>
-            <p>Продажа: <b>${sale.toLocaleString()} ₽</b></p>
-            <p class="profit">Прибыль: ${profit.toLocaleString()} ₽</p>
-        </div>
+                <div>
+                    VIN:
+                    <b>${car.vin || "-"}</b>
+                </div>
 
-        <div class="card">
-            <h3>👤 Инвестор</h3>
-            <p>Имя: <b>${investorName}</b></p>
-            <p>Доля: <b>${investorPercent}%</b></p>
-            <p>К выплате: <b>${investorProfit.toLocaleString()} ₽</b></p>
-            <p>Статус выплаты: <b>${investorStatus}</b></p>
-        </div>
+                <br>
 
-        <div class="button" onclick="addExpenseForm(${car.id})">
-            💸 Добавить расход
-        </div>
+                <div>
+                    Номер:
+                    <b>${car.number || "-"}</b>
+                </div>
 
-        <div class="button" onclick="changeStatusForm(${car.id})">
-            🔄 Изменить статус
-        </div>
+                <br>
 
-        <div class="button" onclick="sellCarForm(${car.id})">
-            💰 Продать автомобиль
-        </div>
+                <div>
+                    Покупка:
+                    <b>${Number(car.buyPrice || 0).toLocaleString("ru-RU")} ₽</b>
+                </div>
 
-        <div class="button" onclick="showInvestorPayment(${car.id})">
-            👤 Инвестор
-        </div>
+                <br>
 
-        <div class="card">
-            <h3>📜 История</h3>
-            ${historyHtml}
-        </div>
+                <div>
+                    Расходы:
+                    <b>${Number(car.expenses || 0).toLocaleString("ru-RU")} ₽</b>
+                </div>
 
-        <div class="button" onclick="showCars()">
-            ← Назад к автомобилям
-        </div>
-    `;
+                <br>
+
+                <div class="profit">
+                    ${
+                        car.status === "Продано" && profit > 0
+                            ? "+" + profit.toLocaleString("ru-RU") + " ₽"
+                            : "В процессе"
+                    }
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById("app").innerHTML = html;
+}
+
+function getStatusClass(status) {
+    switch (status) {
+        case "В продаже":
+            return "sale";
+        case "Подготовка":
+            return "prepare";
+        case "Продано":
+            return "sale";
+        case "Резерв":
+            return "prepare";
+        case "Куплено":
+            return "buy";
+        default:
+            return "buy";
+    }
+}
+
+function getStatusIcon(status) {
+    switch (status) {
+        case "Куплено":
+            return "💰";
+        case "Подготовка":
+            return "🔧";
+        case "В продаже":
+            return "🟢";
+        case "Резерв":
+            return "🟡";
+        case "Продано":
+            return "✅";
+        default:
+            return "🚗";
+    }
 }
