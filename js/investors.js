@@ -9,23 +9,35 @@ function showInvestorPayment(carId) {
         return;
     }
 
-    if (!car.investor) {
-        car.investor = {
-            name: "",
-            amount: 0,
-            percent: 30,
-            paymentStatus: "Ожидает",
-            paymentDate: ""
-        };
-    }
+    const savedInvestors = typeof getInvestorList === "function" ? getInvestorList() : [];
+    const currentInvestor = car.investor || {
+        name: "",
+        amount: 0,
+        percent: 30,
+        paymentStatus: "Ожидает",
+        paymentDate: ""
+    };
 
-    const investor = car.investor;
     const profit = Number(car.profit || 0);
-    const investorProfit = profit > 0 ? profit * Number(investor.percent || 0) / 100 : 0;
+    const investorProfit = profit > 0 ? profit * Number(currentInvestor.percent || 0) / 100 : 0;
+
+    const investorOptions = savedInvestors.length
+        ? savedInvestors.map(investor => `
+            <option value="${escapeInvestorHtml(investor.name)}" data-percent="${Number(investor.percent || 30)}">
+                ${escapeInvestorHtml(investor.name)} (${Number(investor.percent || 30)}%)
+            </option>
+        `).join("")
+        : `<option value="">Инвесторы не добавлены</option>`;
 
     document.getElementById("app").innerHTML = `
         <div class="card">
             <h2>👤 Инвестор</h2>
+
+            <div class="label">Быстрый выбор</div>
+            <select id="investorQuickSelect" class="input" onchange="applySelectedInvestor()">
+                <option value="">Выберите инвестора</option>
+                ${investorOptions}
+            </select>
 
             <div class="label">Автомобиль</div>
             <p><b>${car.brand || ""} ${car.model || ""}</b></p>
@@ -35,7 +47,7 @@ function showInvestorPayment(carId) {
                 id="investorName"
                 class="input"
                 type="text"
-                value="${escapeHtml(investor.name || "")}"
+                value="${escapeInvestorHtml(currentInvestor.name || "")}"
                 placeholder="Иван"
             >
 
@@ -45,7 +57,7 @@ function showInvestorPayment(carId) {
                 class="input"
                 type="number"
                 min="0"
-                value="${Number(investor.amount || 0)}"
+                value="${Number(currentInvestor.amount || 0)}"
                 placeholder="1000000"
             >
 
@@ -56,7 +68,7 @@ function showInvestorPayment(carId) {
                 type="number"
                 min="0"
                 max="100"
-                value="${Number(investor.percent || 30)}"
+                value="${Number(currentInvestor.percent || 30)}"
                 placeholder="30"
             >
 
@@ -68,8 +80,8 @@ function showInvestorPayment(carId) {
 
             <div class="label">Статус выплаты</div>
             <select id="investorStatus" class="input">
-                <option value="Ожидает" ${investor.paymentStatus === "Ожидает" ? "selected" : ""}>Ожидает</option>
-                <option value="Выплачен" ${investor.paymentStatus === "Выплачен" ? "selected" : ""}>Выплачен</option>
+                <option value="Ожидает" ${currentInvestor.paymentStatus === "Ожидает" ? "selected" : ""}>Ожидает</option>
+                <option value="Выплачен" ${currentInvestor.paymentStatus === "Выплачен" ? "selected" : ""}>Выплачен</option>
             </select>
 
             <div class="button" onclick="saveInvestorPayment(${car.id})">
@@ -81,6 +93,32 @@ function showInvestorPayment(carId) {
             </div>
         </div>
     `;
+}
+
+function applySelectedInvestor() {
+    const select = document.getElementById("investorQuickSelect");
+    if (!select) return;
+
+    const selectedName = select.value;
+    if (!selectedName) return;
+
+    const options = Array.from(select.options);
+    const selectedOption = options.find(option => option.value === selectedName);
+
+    if (!selectedOption) return;
+
+    const percent = Number(selectedOption.dataset.percent || 30);
+
+    const nameInput = document.getElementById("investorName");
+    const percentInput = document.getElementById("investorPercent");
+
+    if (nameInput) {
+        nameInput.value = selectedName;
+    }
+
+    if (percentInput) {
+        percentInput.value = percent;
+    }
 }
 
 function saveInvestorPayment(carId) {
@@ -119,7 +157,7 @@ function saveInvestorPayment(carId) {
     openCarCard(carId);
 }
 
-function escapeHtml(value) {
+function escapeInvestorHtml(value) {
     return String(value)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
