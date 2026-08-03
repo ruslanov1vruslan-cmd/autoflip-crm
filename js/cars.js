@@ -1,13 +1,11 @@
 // AutoFlip CRM 2.0
-// Автомобили + фильтры
+// Автомобили
 
 
 function showCars(filter = "Все"){
 
 
-
 const cars = getCars();
-
 
 
 let filteredCars = cars;
@@ -26,10 +24,7 @@ car.status === filter
 
 
 
-
-
 let html = `
-
 
 
 <div class="card">
@@ -52,68 +47,46 @@ let html = `
 
 
 
-
 <div class="card">
 
 
 <div class="filter-row">
 
 
-
 <button onclick="showCars('Все')">
-
-Все (${cars.length})
-
+Все
 </button>
-
 
 
 <button onclick="showCars('Куплено')">
-
 💰 Куплено
-
 </button>
-
 
 
 <button onclick="showCars('Подготовка')">
-
 🔧 Подготовка
-
 </button>
-
 
 
 <button onclick="showCars('В продаже')">
-
 🟢 В продаже
-
 </button>
-
 
 
 <button onclick="showCars('Резерв')">
-
 🟡 Резерв
-
 </button>
-
 
 
 <button onclick="showCars('Продано')">
-
 ✅ Продано
-
 </button>
 
 
-
 </div>
 
 
 </div>
-
-
 
 
 
@@ -126,10 +99,7 @@ let html = `
 </div>
 
 
-
 `;
-
-
 
 
 
@@ -143,29 +113,16 @@ html += `
 
 <div class="card">
 
-
 <center>
-
 
 🚗
 
-
 <h3>
-
-Автомобилей нет
-
+Нет автомобилей
 </h3>
 
 
-<p>
-
-В этом статусе машин нет
-
-</p>
-
-
 </center>
-
 
 </div>
 
@@ -180,21 +137,14 @@ html += `
 
 
 
-
 filteredCars.forEach(car => {
-
 
 
 html += `
 
 
-
 <div class="car-card"
-
 onclick="openCarCard(${car.id})">
-
-
-
 
 
 <h3>
@@ -205,25 +155,15 @@ ${car.brand || ""} ${car.model || ""}
 
 
 
+<span class="status ${statusClass(car.status)}">
 
-
-
-<span class="status ${getStatusClass(car.status)}">
-
-${getStatusIcon(car.status)}
-
-${car.status || "Без статуса"}
+${statusIcon(car.status)}
+${car.status || ""}
 
 </span>
 
 
-
-
-
 <br><br>
-
-
-
 
 
 <div>
@@ -233,13 +173,7 @@ ${car.year || "-"} год
 </div>
 
 
-
-
-
 <br>
-
-
-
 
 
 <div>
@@ -247,50 +181,20 @@ ${car.year || "-"} год
 Покупка:
 
 <b>
-
 ${Number(car.buyPrice || 0).toLocaleString()} ₽
-
 </b>
 
 </div>
 
 
 
-
-
-<br>
-
-
-
-
-
-<div>
-
-Расходы:
-
-<b>
-
-${Number(car.expenses || 0).toLocaleString()} ₽
-
-</b>
-
 </div>
-
-
-
-
-
-</div>
-
 
 
 `;
 
 
-
 });
-
-
 
 
 
@@ -305,40 +209,20 @@ document.getElementById("app").innerHTML = html;
 
 
 
+function statusClass(status){
 
 
-function getStatusClass(status){
+if(status === "В продаже") return "sale";
 
 
-
-switch(status){
-
-
-case "В продаже":
-
-return "sale";
+if(status === "Подготовка") return "prepare";
 
 
-
-case "Подготовка":
-
-return "prepare";
+if(status === "Продано") return "sale";
 
 
+if(status === "Резерв") return "prepare";
 
-case "Продано":
-
-return "sale";
-
-
-
-case "Резерв":
-
-return "prepare";
-
-
-
-default:
 
 return "buy";
 
@@ -347,60 +231,27 @@ return "buy";
 
 
 
-}
 
 
+function statusIcon(status){
 
 
+if(status === "Куплено") return "💰";
 
 
+if(status === "Подготовка") return "🔧";
 
 
-function getStatusIcon(status){
+if(status === "В продаже") return "🟢";
 
 
-
-switch(status){
-
+if(status === "Резерв") return "🟡";
 
 
-case "Куплено":
+if(status === "Продано") return "✅";
 
-return "💰";
-
-
-
-case "Подготовка":
-
-return "🔧";
-
-
-
-case "В продаже":
-
-return "🟢";
-
-
-
-case "Резерв":
-
-return "🟡";
-
-
-
-case "Продано":
-
-return "✅";
-
-
-
-default:
 
 return "🚗";
-
-
-}
-
 
 
 }
