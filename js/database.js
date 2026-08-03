@@ -1,141 +1,101 @@
 // AutoFlip CRM 2.0
-// Центральное хранилище
-
+// Центральное хранилище данных
 
 const STORAGE_KEY = "autoflip_cars";
 
-
-
-function getCars(){
-
+function getCars() {
     try {
+        const raw = localStorage.getItem(STORAGE_KEY);
 
-        const data = localStorage.getItem(STORAGE_KEY);
-
-        if(!data){
+        if (!raw) {
             return [];
         }
 
-
-        return JSON.parse(data);
-
-
-    } catch(error){
-
-        console.error(
-            "Ошибка загрузки данных",
-            error
-        );
-
+        const cars = JSON.parse(raw);
+        return Array.isArray(cars) ? cars : [];
+    } catch (error) {
+        console.error("Ошибка чтения автомобилей:", error);
         return [];
+    }
+}
 
+function saveCars(cars) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.isArray(cars) ? cars : []));
+    } catch (error) {
+        console.error("Ошибка сохранения автомобилей:", error);
+        alert("Не удалось сохранить данные");
+    }
+}
+
+function addCar(car) {
+    const cars = getCars();
+
+    const newCar = {
+        id: Date.now(),
+        createdAt: new Date().toLocaleDateString("ru-RU"),
+        brand: "",
+        model: "",
+        year: "",
+        mileage: "",
+        vin: "",
+        number: "",
+        buyPrice: 0,
+        status: "Куплено",
+        expenses: 0,
+        expensesList: [],
+        salePrice: 0,
+        profit: 0,
+        investor: {
+            name: "",
+            amount: 0,
+            percent: 30,
+            paymentStatus: "Ожидает",
+            paymentDate: ""
+        },
+        history: [],
+        ...car
+    };
+
+    if (!newCar.history || !Array.isArray(newCar.history)) {
+        newCar.history = [];
     }
 
-}
-
-
-
-
-
-function saveCars(cars){
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(cars)
-    );
-
-}
-
-
-
-
-
-function addCar(car){
-
-
-    const cars = getCars();
-
-
-    car.id = Date.now();
-
-
-    car.createdAt =
-    new Date().toLocaleDateString();
-
-
-
-    cars.push(car);
-
-
-    saveCars(cars);
-
-
-    return car;
-
-}
-
-
-
-
-
-function getCarById(id){
-
-
-    const cars = getCars();
-
-
-    return cars.find(
-        car => car.id == id
-    );
-
-
-}
-
-
-
-
-
-function updateCar(updatedCar){
-
-
-    const cars = getCars();
-
-
-    const index =
-    cars.findIndex(
-        car => car.id == updatedCar.id
-    );
-
-
-    if(index !== -1){
-
-        cars[index] = updatedCar;
-
+    if (newCar.history.length === 0) {
+        newCar.history.push({
+            date: new Date().toLocaleDateString("ru-RU"),
+            action: "Автомобиль создан"
+        });
     }
 
-
+    cars.push(newCar);
     saveCars(cars);
-
-
+    return newCar;
 }
 
+function getCarById(id) {
+    const cars = getCars();
+    return cars.find(car => car.id == id);
+}
 
+function updateCar(updatedCar) {
+    const cars = getCars();
+    const index = cars.findIndex(car => car.id == updatedCar.id);
 
+    if (index === -1) {
+        return false;
+    }
 
-
-function deleteCar(id){
-
-
-    let cars = getCars();
-
-
-    cars =
-    cars.filter(
-        car => car.id != id
-    );
-
-
+    cars[index] = updatedCar;
     saveCars(cars);
+    return true;
+}
 
+function deleteCar(id) {
+    const cars = getCars().filter(car => car.id != id);
+    saveCars(cars);
+}
 
+function clearAllCars() {
+    saveCars([]);
 }
