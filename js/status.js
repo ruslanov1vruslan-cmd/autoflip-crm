@@ -49,6 +49,7 @@ document.getElementById("app").innerHTML = `
 
 
 
+
 <div 
 class="button"
 onclick="saveStatus(${carId})">
@@ -73,6 +74,7 @@ function saveStatus(carId){
 
 
 const cars = getCars();
+
 
 
 const car = cars.find(
@@ -126,7 +128,7 @@ car.status = newStatus;
 
 if(!car.history){
 
-car.history=[];
+car.history = [];
 
 }
 
@@ -153,10 +155,6 @@ alert("Статус обновлён");
 
 
 
-openCarCard(carId);
-
-
-}
 openCarCard(carId);
 
 
