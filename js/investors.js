@@ -18,8 +18,7 @@ function showInvestorPayment(carId) {
         paymentDate: ""
     };
 
-    const profit = Number(car.profit || 0);
-    const investorProfit = profit > 0 ? profit * Number(currentInvestor.percent || 0) / 100 : 0;
+    const econ = getCarEconomics(car);
 
     const investorOptions = savedInvestors.length
         ? savedInvestors.map(investor => `
@@ -74,8 +73,9 @@ function showInvestorPayment(carId) {
 
             <div class="card">
                 <h3>📊 Расчёт</h3>
-                <p>Прибыль автомобиля: <b>${profit.toLocaleString("ru-RU")} ₽</b></p>
-                <p>К выплате инвестору: <b class="profit">${investorProfit.toLocaleString("ru-RU")} ₽</b></p>
+                <p>Валовая прибыль сделки: <b>${econ.grossProfit.toLocaleString("ru-RU")} ₽</b></p>
+                <p>К выплате инвестору: <b class="profit">${econ.investorPayout.toLocaleString("ru-RU")} ₽</b></p>
+                <p>Прибыль владельца: <b>${econ.ownerProfit.toLocaleString("ru-RU")} ₽</b></p>
             </div>
 
             <div class="label">Статус выплаты</div>
@@ -102,9 +102,7 @@ function applySelectedInvestor() {
     const selectedName = select.value;
     if (!selectedName) return;
 
-    const options = Array.from(select.options);
-    const selectedOption = options.find(option => option.value === selectedName);
-
+    const selectedOption = Array.from(select.options).find(option => option.value === selectedName);
     if (!selectedOption) return;
 
     const percent = Number(selectedOption.dataset.percent || 30);
@@ -146,9 +144,11 @@ function saveInvestorPayment(carId) {
         car.history = [];
     }
 
+    const econ = getCarEconomics(car);
+
     car.history.push({
         date: new Date().toLocaleDateString("ru-RU"),
-        action: `Инвестор: ${name || "—"}, доля: ${percent}%, статус выплаты: ${paymentStatus}`
+        action: `Инвестор: ${name || "—"}, доля: ${percent}%, к выплате: ${econ.investorPayout.toLocaleString("ru-RU")} ₽, статус: ${paymentStatus}`
     });
 
     saveCars(getCars());
