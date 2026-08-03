@@ -102,8 +102,6 @@ function createCar(){
 const car = {
 
 
-id: Date.now(),
-
 
 brand:
 document.getElementById("brand").value,
