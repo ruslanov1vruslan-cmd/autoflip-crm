@@ -10,9 +10,9 @@ function sellCarForm(carId) {
     }
 
     const currentSalePrice = Number(car.salePrice || 0);
-    const currentInvestorName = car.investor?.name || "";
-    const currentInvestorPercent = Number(car.investor?.percent || 30);
-    const currentPaymentStatus = car.investor?.paymentStatus || "Ожидает";
+    const investorName = car.investor?.name || "";
+    const investorPercent = Number(car.investor?.percent || 30);
+    const investorStatus = car.investor?.paymentStatus || "Ожидает";
 
     document.getElementById("app").innerHTML = `
         <div class="card">
@@ -31,30 +31,30 @@ function sellCarForm(carId) {
                 placeholder="3500000"
             >
 
-            <div class="label">Инвестор</div>
+            <div class="label">Имя инвестора</div>
             <input
                 id="saleInvestorName"
                 class="input"
                 type="text"
-                value="${escapeHtml(currentInvestorName)}"
-                placeholder="Имя инвестора"
+                value="${escapeHtml(investorName)}"
+                placeholder="Иван"
             >
 
-            <div class="label">Процент инвестора</div>
+            <div class="label">Доля инвестора (%)</div>
             <input
                 id="saleInvestorPercent"
                 class="input"
                 type="number"
                 min="0"
                 max="100"
-                value="${currentInvestorPercent}"
+                value="${investorPercent}"
                 placeholder="30"
             >
 
             <div class="label">Статус выплаты инвестору</div>
             <select id="saleInvestorStatus" class="input">
-                <option value="Ожидает" ${currentPaymentStatus === "Ожидает" ? "selected" : ""}>Ожидает</option>
-                <option value="Выплачен" ${currentPaymentStatus === "Выплачен" ? "selected" : ""}>Выплачен</option>
+                <option value="Ожидает" ${investorStatus === "Ожидает" ? "selected" : ""}>Ожидает</option>
+                <option value="Выплачен" ${investorStatus === "Выплачен" ? "selected" : ""}>Выплачен</option>
             </select>
 
             <div class="button" onclick="saveSale(${car.id})">
@@ -90,7 +90,7 @@ function saveSale(carId) {
     const buy = Number(car.buyPrice || 0);
     const expenses = Number(car.expenses || 0);
     const profit = salePrice - buy - expenses;
-    const investorProfit = investorPercent > 0 ? (profit * investorPercent / 100) : 0;
+    const investorProfit = investorPercent > 0 ? profit * investorPercent / 100 : 0;
 
     car.salePrice = salePrice;
     car.profit = profit;
