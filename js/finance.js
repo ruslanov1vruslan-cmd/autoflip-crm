@@ -1,5 +1,5 @@
 // AutoFlip CRM 2.0
-// Финансы
+// Финансовый модуль
 
 
 function showFinance(){
@@ -9,11 +9,15 @@ const cars = getCars();
 
 
 
-let invested = 0;
+let moneyInCars = 0;
 
-let profit = 0;
+let totalInvested = 0;
 
-let investorDebt = 0;
+let totalExpenses = 0;
+
+let totalSales = 0;
+
+let totalProfit = 0;
 
 
 
@@ -21,34 +25,58 @@ cars.forEach(car => {
 
 
 
-invested +=
-Number(car.buyPrice || 0)
-+
-Number(car.expenses || 0);
+const buy = Number(car.buyPrice || 0);
+
+const expenses = Number(car.expenses || 0);
+
+const sale = Number(car.salePrice || 0);
 
 
 
-profit +=
-Number(car.profit || 0);
+totalInvested += buy;
+
+
+totalExpenses += expenses;
 
 
 
-if(
-car.investorProfit &&
-!car.investorPaid
-){
+// Деньги, которые сейчас находятся в автомобилях
 
-investorDebt +=
-Number(car.investorProfit);
+if(car.status !== "Продано"){
+
+
+moneyInCars += buy + expenses;
+
 
 }
+
+
+
+
+// Проданные автомобили
+
+if(car.status === "Продано" && sale > 0){
+
+
+totalSales += sale;
+
+
+totalProfit += sale - buy - expenses;
+
+
+}
+
 
 
 });
 
 
 
+
+
+
 document.getElementById("app").innerHTML = `
+
 
 
 <div class="card main-card">
@@ -56,37 +84,14 @@ document.getElementById("app").innerHTML = `
 
 <div class="label">
 
-📊 Чистая прибыль
+💰 Деньги в автомобилях
 
 </div>
 
 
 <div class="big-number">
 
-${profit.toLocaleString()} ₽
-
-</div>
-
-
-</div>
-
-
-
-<div class="stats">
-
-
-<div class="card">
-
-<div class="label">
-
-🚗 В автомобилях
-
-</div>
-
-
-<div class="stat-number">
-
-${invested.toLocaleString()} ₽
+${moneyInCars.toLocaleString()} ₽
 
 </div>
 
@@ -96,27 +101,6 @@ ${invested.toLocaleString()} ₽
 
 
 
-<div class="card">
-
-<div class="label">
-
-👤 Инвесторам
-
-</div>
-
-
-<div class="stat-number">
-
-${investorDebt.toLocaleString()} ₽
-
-</div>
-
-
-</div>
-
-
-
-</div>
 
 
 
@@ -125,34 +109,169 @@ ${investorDebt.toLocaleString()} ₽
 
 <h3>
 
-💵 Финансовая информация
+📊 Финансы
 
 </h3>
 
 
+
+
 <p>
 
-Автомобилей:
+Всего вложено:
 
-${cars.length}
+<br>
+
+<b>
+
+${totalInvested.toLocaleString()} ₽
+
+</b>
 
 </p>
 
 
 
+
+
 <p>
 
-Ожидают выплаты:
+Расходы:
 
-${investorDebt.toLocaleString()} ₽
+<br>
+
+<b>
+
+${totalExpenses.toLocaleString()} ₽
+
+</b>
 
 </p>
+
+
+
+
+
+<p>
+
+Продажи:
+
+<br>
+
+<b>
+
+${totalSales.toLocaleString()} ₽
+
+</b>
+
+</p>
+
+
+
+
+
+<p>
+
+Прибыль:
+
+<br>
+
+<b class="profit">
+
+${totalProfit.toLocaleString()} ₽
+
+</b>
+
+</p>
+
 
 
 </div>
 
 
 
+
+
+
+
+<div class="card">
+
+
+<h3>
+
+🚗 Автомобили
+
+</h3>
+
+
+<p>
+
+Всего:
+
+<b>
+
+${cars.length}
+
+</b>
+
+</p>
+
+
+<p>
+
+В работе:
+
+<b>
+
+${
+cars.filter(
+car => car.status !== "Продано"
+).length
+
+}
+
+</b>
+
+</p>
+
+
+<p>
+
+Продано:
+
+<b>
+
+${
+cars.filter(
+car => car.status === "Продано"
+).length
+
+}
+
+</b>
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="button" onclick="loadHome()">
+
+← Главная
+
+</div>
+
+
+
 `;
+
+
 
 }
