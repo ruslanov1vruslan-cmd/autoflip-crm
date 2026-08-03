@@ -26,7 +26,9 @@ const expenses = Number(car.expenses || 0);
 const sale = Number(car.salePrice || 0);
 
 
+
 let profit = Number(car.profit || 0);
+
 
 
 if(!profit && sale > 0){
@@ -37,8 +39,8 @@ profit = sale - buy - expenses;
 
 
 
-document.getElementById("app").innerHTML = `
 
+document.getElementById("app").innerHTML = `
 
 
 <div class="card">
@@ -61,7 +63,6 @@ ${car.status}
 </span>
 
 
-
 </div>
 
 
@@ -72,9 +73,7 @@ ${car.status}
 
 
 <h3>
-
 🚗 Автомобиль
-
 </h3>
 
 
@@ -108,49 +107,55 @@ VIN: ${car.vin || "-"}
 
 
 <h3>
-
 💰 Деньги
-
 </h3>
 
 
 
 <p>
+
 Покупка:
 
 <b>
 ${buy.toLocaleString()} ₽
 </b>
+
 </p>
 
 
 
 <p>
+
 Расходы:
 
 <b>
 ${expenses.toLocaleString()} ₽
 </b>
+
 </p>
 
 
 
 <p>
+
 Себестоимость:
 
 <b>
 ${(buy + expenses).toLocaleString()} ₽
 </b>
+
 </p>
 
 
 
 <p>
+
 Продажа:
 
 <b>
 ${sale.toLocaleString()} ₽
 </b>
+
 </p>
 
 
@@ -180,11 +185,13 @@ ${profit.toLocaleString()} ₽
 
 
 
+
 <div class="button" onclick="addExpenseForm(${car.id})">
 
 💸 Добавить расход
 
 </div>
+
 
 
 
@@ -198,11 +205,13 @@ ${profit.toLocaleString()} ₽
 
 
 
+
 <div class="button" onclick="sellCarForm(${car.id})">
 
 💰 Продать автомобиль
 
 </div>
+
 
 
 
@@ -216,28 +225,13 @@ ${profit.toLocaleString()} ₽
 
 
 
-<div class="button" onclick="deleteCarConfirm(${car.id})">
-
-🗑 Удалить автомобиль
-
-</div>
-
-
-
 
 <div class="button" onclick="showCars()">
 
-← Назад
+← Назад к автомобилям
 
 </div>
 
-
-
-`;
-
-
-
-}
 
 
 `;
