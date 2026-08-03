@@ -16,9 +16,11 @@ document.getElementById("app").innerHTML = `
 </h2>
 
 
+
 <div class="label">
 Сумма
 </div>
+
 
 
 <input 
@@ -32,6 +34,7 @@ placeholder="50000"
 <div class="label">
 Статья расхода
 </div>
+
 
 
 <select id="expenseCategory" class="input">
@@ -58,6 +61,11 @@ placeholder="50000"
 
 
 <option>
+Страховка
+</option>
+
+
+<option>
 Другое
 </option>
 
@@ -66,16 +74,19 @@ placeholder="50000"
 
 
 
+
 <div class="label">
 Комментарий
 </div>
 
 
-<input 
+
+<input
 id="expenseComment"
 class="input"
 placeholder="Комментарий"
 >
+
 
 
 
@@ -89,13 +100,22 @@ onclick="saveExpense(${carId})">
 
 
 
+<div 
+class="button"
+onclick="openCarCard(${carId})">
+
+← Назад
+
+</div>
+
+
+
 </div>
 
 
 `;
 
 }
-
 
 
 
@@ -122,6 +142,7 @@ return;
 
 
 
+
 const amount = Number(
 document.getElementById("expenseAmount").value
 );
@@ -142,14 +163,14 @@ return;
 const expense = {
 
 
-id:Date.now(),
+id: Date.now(),
 
 
 category:
 document.getElementById("expenseCategory").value,
 
 
-amount:amount,
+amount: amount,
 
 
 comment:
@@ -165,9 +186,10 @@ new Date().toLocaleDateString()
 
 
 
+
 if(!car.expensesList){
 
-car.expensesList=[];
+car.expensesList = [];
 
 }
 
@@ -180,7 +202,11 @@ car.expensesList.push(expense);
 car.expenses =
 car.expensesList.reduce(
 
-(sum,item)=>sum + item.amount,
+(sum,item)=>{
+
+return sum + Number(item.amount);
+
+},
 
 0
 
@@ -189,24 +215,28 @@ car.expensesList.reduce(
 
 
 
+
 if(!car.history){
 
-car.history=[];
+car.history = [];
 
 }
 
 
 
+
 car.history.push({
+
 
 date:
 new Date().toLocaleDateString(),
 
 
 action:
-`Добавлен расход: ${expense.category} ${expense.amount.toLocaleString()} ₽`
+`Расход: ${expense.category} ${expense.amount.toLocaleString()} ₽`
 
 });
+
 
 
 
@@ -223,4 +253,3 @@ openCarCard(carId);
 
 
 }
-
